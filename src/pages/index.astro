@@ -275,20 +275,28 @@ const projects = (await getCollection("projects")).sort(
 
       form?.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!form.checkValidity()) {
-          error?.removeAttribute("hidden");
-          form.reportValidity();
-          return;
-        }
 
         const data = new FormData(form);
         const name = String(data.get("name") || "").trim();
         const contact = String(data.get("contact") || "").trim();
         const topic = String(data.get("topic") || "").trim();
+        const topicField = form.querySelector('input[name="topic"]');
+
+        topicField?.setCustomValidity(
+          topic.length < 10 ? "Тема обращения должна быть не короче 10 символов." : "",
+        );
+
+        if (!name || !contact || !topic || topic.length < 10 || !form.checkValidity()) {
+          error?.removeAttribute("hidden");
+          form.reportValidity();
+          return;
+        }
+
         const subject = encodeURIComponent(`Обращение с сайта: ${topic}`);
         const body = encodeURIComponent(`Имя: ${name}\nКонтакт: ${contact}\nТема: ${topic}`);
 
         error?.setAttribute("hidden", "");
+        topicField?.setCustomValidity("");
         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
         dialog?.close();
         form.reset();
