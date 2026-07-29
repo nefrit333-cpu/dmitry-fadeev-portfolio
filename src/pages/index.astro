@@ -1,0 +1,298 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import "../styles/global.css";
+import { profile } from "../data/profile";
+import portrait from "../../public/images/dmitry-fadeev.png";
+
+const experience = (await getCollection("experience")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Портфолио Дмитрия Фадеева, Project Manager в digital, B2B и fashion-tech проектах." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{profile.name} - {profile.role}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top">Dmitriy Web</a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#experience">Опыт</a>
+        <a href="#projects">Кейсы</a>
+        <a href="#education">Диплом</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">{profile.role} / {profile.location}</p>
+          <h1 id="hero-title">{profile.name}</h1>
+          <p class="lead">{profile.headline}</p>
+          <p class="hero-summary">{profile.summary}</p>
+          <div class="actions" aria-label="Основные действия">
+            <a class="button primary" href="#projects">Смотреть кейсы</a>
+            <button class="button secondary" type="button" data-feedback-trigger>Написать</button>
+          </div>
+        </div>
+        <figure class="hero-media">
+          <Image src={portrait} alt="Дмитрий Фадеев" widths={[480, 720, 960]} sizes="(max-width: 860px) 82vw, 42vw" loading="eager" />
+        </figure>
+      </section>
+
+      <section class="metrics" aria-label="Ключевые показатели">
+        {
+          profile.metrics.map((metric) => (
+            <div class="metric">
+              <strong>{metric.value}</strong>
+              <span>{metric.label}</span>
+            </div>
+          ))
+        }
+      </section>
+
+      <section class="section intro-section" aria-labelledby="about-title">
+        <div class="section-heading">
+          <p class="eyebrow">Позиционирование</p>
+          <h2 id="about-title">PM, который переводит ожидания бизнеса в управляемый план</h2>
+        </div>
+        <div class="intro-grid">
+          <p>
+            Моя сильная сторона - быстро собрать контекст, превратить его в понятные требования, дорожную карту и рабочий ритм команды.
+          </p>
+          <p>
+            В проектах держу фокус на результате: прозрачные статусы, контроль рисков, приоритизация, приемка и коммуникация без лишнего шума.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="experience" aria-labelledby="experience-title">
+        <div class="section-heading">
+          <p class="eyebrow">Опыт</p>
+          <h2 id="experience-title">Digital, B2B и fashion-tech</h2>
+        </div>
+        <div class="timeline">
+          {
+            experience.map((item) => (
+              <article class="timeline-item">
+                <div class="timeline-body">
+                  <h3>
+                    {item.data.url ? (
+                      <a href={item.data.url} target="_blank" rel="noreferrer">{item.data.company}</a>
+                    ) : (
+                      item.data.company
+                    )}
+                  </h3>
+                  <p class="role">{item.data.role}</p>
+                  <p>{item.body}</p>
+                  <ul>
+                    {item.data.highlights.map((highlight) => <li>{highlight}</li>)}
+                  </ul>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section projects-section" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <p class="eyebrow">Портфолио</p>
+          <h2 id="projects-title">Кейсы и проектные материалы</h2>
+          <p>
+            В портфолио собраны учебные и практические проекты: веб-игра, продуктовая платформа, миграция WordPress и техническая задача для каталога.
+          </p>
+        </div>
+        <div class="project-grid">
+          {
+            projects.map((project) => (
+              <article class="project-card">
+                <div class="project-topline">
+                  <span>{project.data.category}</span>
+                  <span>{project.data.role}</span>
+                </div>
+                <h3>{project.data.title}</h3>
+                <p>{project.body}</p>
+                <ul>
+                  {project.data.outcomes.map((outcome) => <li>{outcome}</li>)}
+                </ul>
+                {project.data.stack.length > 0 && (
+                  <div class="tags" aria-label={`Технологии и инструменты проекта ${project.data.title}`}>
+                    {project.data.stack.map((tag) => <span>{tag}</span>)}
+                  </div>
+                )}
+                {project.data.links.length > 0 && (
+                  <div class="links">
+                    {project.data.links.map((link) => (
+                      <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="section split-section" id="education" aria-labelledby="education-title">
+        <div class="section-heading">
+          <p class="eyebrow">Образование</p>
+          <h2 id="education-title">Диплом Яндекса по управлению IT-проектами</h2>
+        </div>
+        <div class="education-panel">
+          <div>
+            <h3>{profile.education.title}</h3>
+            <p>{profile.education.program}</p>
+          </div>
+          <dl>
+            <div>
+              <dt>Квалификация</dt>
+              <dd>{profile.education.qualification}</dd>
+            </div>
+            <div>
+              <dt>Период</dt>
+              <dd>{profile.education.period}</dd>
+            </div>
+            <div>
+              <dt>Объем</dt>
+              <dd>{profile.education.hours}</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="section skills-section" aria-labelledby="skills-title">
+        <div class="section-heading">
+          <p class="eyebrow">Инструменты</p>
+          <h2 id="skills-title">Навыки для ежедневного управления проектами</h2>
+        </div>
+        <div class="skill-list">
+          {profile.skills.map((skill) => <span>{skill}</span>)}
+        </div>
+      </section>
+
+      <section class="section github-section" aria-labelledby="github-title">
+        <div class="section-heading">
+          <p class="eyebrow">GitHub</p>
+          <h2 id="github-title">Код и проектные артефакты</h2>
+        </div>
+        <div class="github-panel">
+          <p>{profile.github.note}</p>
+          <div class="repo-actions" aria-label="Публичные репозитории GitHub">
+            {
+              profile.github.repos.map((repo) => (
+                <a class="repo-button" href={repo.href} target="_blank" rel="noreferrer">
+                  <span>{repo.name}</span>
+                  <small>{repo.description}</small>
+                </a>
+              ))
+            }
+            <a class="repo-button repo-button-featured" href={profile.github.projectRepo} target="_blank" rel="noreferrer">
+              <span>Pixel Runner</span>
+              <small>Открытый проект с web-game, лендингом и проектной документацией.</small>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact" id="contact" aria-labelledby="contact-title">
+        <div>
+          <p class="eyebrow">Контакты</p>
+          <h2 id="contact-title">Готов обсудить digital или IT-проект</h2>
+        </div>
+        <div class="contact-actions">
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          <a href={profile.telegram} target="_blank" rel="noreferrer">Написать в Telegram</a>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="feedback-dialog" id="feedbackDialog" aria-labelledby="feedbackTitle">
+      <form class="feedback-form" id="feedbackForm" method="dialog" novalidate>
+        <div class="feedback-head">
+          <div>
+            <p class="eyebrow">Обратная связь</p>
+            <h2 id="feedbackTitle">Коротко опишите запрос</h2>
+          </div>
+          <button class="dialog-close" type="button" data-feedback-close aria-label="Закрыть форму">×</button>
+        </div>
+
+        <label>
+          <span>Имя</span>
+          <input name="name" type="text" autocomplete="name" required placeholder="Как к вам обращаться" />
+        </label>
+
+        <label>
+          <span>Почта, телефон или Telegram</span>
+          <input name="contact" type="text" autocomplete="email" required placeholder="email, +7... или @username" />
+        </label>
+
+        <label>
+          <span>Тема обращения</span>
+          <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
+        </label>
+
+        <p class="form-error" data-feedback-error hidden>Заполните все поля. Тема обращения должна быть не короче 10 символов.</p>
+
+        <button class="button primary form-submit" type="submit">Отправить</button>
+      </form>
+    </dialog>
+
+    <script is:inline>
+      const dialog = document.getElementById("feedbackDialog");
+      const form = document.getElementById("feedbackForm");
+      const error = document.querySelector("[data-feedback-error]");
+      const email = "nefrit333@gmail.com";
+
+      document.querySelectorAll("[data-feedback-trigger]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          if (dialog && "showModal" in dialog) {
+            dialog.showModal();
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-feedback-close]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          dialog?.close();
+        });
+      });
+
+      dialog?.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+          dialog.close();
+        }
+      });
+
+      form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!form.checkValidity()) {
+          error?.removeAttribute("hidden");
+          form.reportValidity();
+          return;
+        }
+
+        const data = new FormData(form);
+        const name = String(data.get("name") || "").trim();
+        const contact = String(data.get("contact") || "").trim();
+        const topic = String(data.get("topic") || "").trim();
+        const subject = encodeURIComponent(`Обращение с сайта: ${topic}`);
+        const body = encodeURIComponent(`Имя: ${name}\nКонтакт: ${contact}\nТема: ${topic}`);
+
+        error?.setAttribute("hidden", "");
+        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        dialog?.close();
+        form.reset();
+      });
+    </script>
+  </body>
+</html>
