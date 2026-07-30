@@ -1,8 +1,12 @@
 ---
 company: "РОВИ Факторинг Плюс / Дельта Лизинг"
 role: "Project Manager B2B"
-location: "Москва"
-order: 3
+companyLinks:
+  - label: "РОВИ Факторинг Плюс"
+    href: "https://rowi.com/"
+  - label: "Дельта Лизинг"
+    href: "https://deltaleasing.ru/about/"
+order: 4
 highlights:
   - "Вел B2B-проекты по Agile/Scrum, контролировал сроки, статусы, риски и коммуникацию участников."
   - "Соблюдение сроков по проектам достигало 95%."

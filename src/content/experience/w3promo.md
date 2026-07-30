@@ -1,7 +1,7 @@
 ---
 company: "W3Promo"
 role: "Project Manager"
-location: "Москва"
+url: "https://wwwpromo.ru/"
 order: 1
 highlights:
   - "Вел до 10 проектов одновременно: ТЗ, roadmap, mind map, графики, сметы и контроль подрядчиков."

@@ -11,41 +11,85 @@ const experience = (await getCollection("experience")).sort(
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
+
+const projectsWithPrimaryLinks = projects.map((project) => ({
+  project,
+  primaryLink:
+    project.data.links.find((link) => /deploy|сайт|старый сайт/i.test(link.label)) ??
+    project.data.links[0],
+}));
+const cooperationSubject = encodeURIComponent("Предложение сотрудничества");
+const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
 ---
 
 <!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Портфолио Дмитрия Фадеева, Project Manager в digital, B2B и fashion-tech проектах." />
+    <meta
+      name="description"
+      content="Премиальное портфолио Дмитрия Фадеева, Project Manager для digital, B2B и fashion-tech проектов."
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{profile.name} - {profile.role}</title>
+    <script is:inline>
+      (() => {
+        try {
+          if (localStorage.getItem("theme") === "light") {
+            document.documentElement.dataset.theme = "light";
+          }
+        } catch {
+          document.documentElement.dataset.theme = "dark";
+        }
+      })();
+    </script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top">Dmitriy Web</a>
+      <a class="brand" href="#top"><span>Dmitriy Web</span></a>
       <nav class="nav" aria-label="Основная навигация">
-        <a href="#experience">Опыт</a>
-        <a href="#projects">Кейсы</a>
-        <a href="#education">Диплом</a>
+        <a href="#offer">Обо мне</a>
+        <a href="#skills">Навыки</a>
+        <a href="#projects">Проекты</a>
+        <a href="#artifacts">FAQ</a>
         <a href="#contact">Контакты</a>
       </nav>
+      <button class="theme-action" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false">
+        <span class="theme-icon theme-icon-light" aria-hidden="true">☾</span>
+        <span class="theme-icon theme-icon-dark" aria-hidden="true">✹</span>
+      </button>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <p class="eyebrow">{profile.role} / {profile.location}</p>
-          <h1 id="hero-title">{profile.name}</h1>
+          <p class="eyebrow hero-eyebrow">{profile.name} / {profile.role}</p>
+          <h1 id="hero-title">Управляю digital-проектами без хаоса</h1>
           <p class="lead">{profile.headline}</p>
           <p class="hero-summary">{profile.summary}</p>
           <div class="actions" aria-label="Основные действия">
-            <a class="button primary" href="#projects">Смотреть кейсы</a>
-            <button class="button secondary" type="button" data-feedback-trigger>Написать</button>
+            <button class="button primary" type="button" data-feedback-trigger>Обсудить проект</button>
+            <a class="button secondary" href="#projects">Смотреть кейсы</a>
+          </div>
+          <div class="proof-strip" aria-label="Рабочие принципы">
+            {profile.proofPoints.map((point) => <span>{point}</span>)}
           </div>
         </div>
-        <figure class="hero-media">
-          <Image src={portrait} alt="Дмитрий Фадеев" widths={[480, 720, 960]} sizes="(max-width: 860px) 82vw, 42vw" loading="eager" />
+
+        <figure class="hero-media" aria-label="Портрет Дмитрия Фадеева">
+          <div class="portrait-frame">
+            <Image
+              src={portrait}
+              alt="Дмитрий Фадеев"
+              widths={[480, 720, 960]}
+              sizes="(max-width: 860px) 82vw, 40vw"
+              loading="eager"
+            />
+          </div>
+          <figcaption class="hero-note">
+            <span>Project control</span>
+            <strong>requirements / backlog / delivery</strong>
+          </figcaption>
         </figure>
       </section>
 
@@ -60,18 +104,24 @@ const projects = (await getCollection("projects")).sort(
         }
       </section>
 
-      <section class="section intro-section" aria-labelledby="about-title">
+      <section class="section offer-section" id="offer" aria-labelledby="offer-title">
         <div class="section-heading">
-          <p class="eyebrow">Позиционирование</p>
-          <h2 id="about-title">PM, который переводит ожидания бизнеса в управляемый план</h2>
+          <p class="eyebrow">Подход</p>
+          <h2 id="offer-title">Даже сложный проект должен быть понятным</h2>
+          <p>
+            Моя задача - сделать так, чтобы бизнес видел движение, команда понимала приоритеты, а результат не терялся между встречами, задачами и правками.
+          </p>
         </div>
-        <div class="intro-grid">
-          <p>
-            Моя сильная сторона - быстро собрать контекст, превратить его в понятные требования, дорожную карту и рабочий ритм команды.
-          </p>
-          <p>
-            В проектах держу фокус на результате: прозрачные статусы, контроль рисков, приоритизация, приемка и коммуникация без лишнего шума.
-          </p>
+        <div class="offer-grid">
+          {
+            profile.offer.map((item, index) => (
+              <article class="offer-card">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
         </div>
       </section>
 
@@ -86,7 +136,16 @@ const projects = (await getCollection("projects")).sort(
               <article class="timeline-item">
                 <div class="timeline-body">
                   <h3>
-                    {item.data.url ? (
+                    {item.data.companyLinks ? (
+                      <span class="company-links">
+                        {item.data.companyLinks.map((link, index) => (
+                          <>
+                            {index > 0 && <span class="company-separator">/</span>}
+                            <a class="title-link" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+                          </>
+                        ))}
+                      </span>
+                    ) : item.data.url ? (
                       <a href={item.data.url} target="_blank" rel="noreferrer">{item.data.company}</a>
                     ) : (
                       item.data.company
@@ -106,21 +165,26 @@ const projects = (await getCollection("projects")).sort(
 
       <section class="section projects-section" id="projects" aria-labelledby="projects-title">
         <div class="section-heading">
-          <p class="eyebrow">Портфолио</p>
-          <h2 id="projects-title">Кейсы и проектные материалы</h2>
-          <p>
-            В портфолио собраны учебные и практические проекты: веб-игра, продуктовая платформа, миграция WordPress и техническая задача для каталога.
-          </p>
+          <p class="eyebrow">Кейсы</p>
+          <h2 id="projects-title">Проекты, где важны структура, скорость и приемка</h2>
         </div>
         <div class="project-grid">
           {
-            projects.map((project) => (
+            projectsWithPrimaryLinks.map(({ project, primaryLink }) => (
               <article class="project-card">
                 <div class="project-topline">
                   <span>{project.data.category}</span>
                   <span>{project.data.role}</span>
                 </div>
-                <h3>{project.data.title}</h3>
+                <h3>
+                  {primaryLink ? (
+                    <a class="title-link" href={primaryLink.href} target="_blank" rel="noreferrer">
+                      {project.data.title}
+                    </a>
+                  ) : (
+                    project.data.title
+                  )}
+                </h3>
                 <p>{project.body}</p>
                 <ul>
                   {project.data.outcomes.map((outcome) => <li>{outcome}</li>)}
@@ -143,6 +207,32 @@ const projects = (await getCollection("projects")).sort(
         </div>
       </section>
 
+      <section class="section artifacts-section" id="artifacts" aria-labelledby="artifacts-title">
+        <div class="section-heading">
+          <p class="eyebrow">PM documentation</p>
+          <h2 id="artifacts-title">Проектные артефакты</h2>
+        </div>
+        <div class="artifacts-panel">
+          <div class="artifact-groups">
+            {
+              profile.artifacts.featuredGroups.map((group) => (
+                <article class="artifact-group">
+                  <div class="artifact-group-head">
+                    <h3>{group.title}</h3>
+                  </div>
+                  <p>{group.text}</p>
+                  <div class="artifact-links" aria-label={`Артефакты: ${group.title}`}>
+                    {group.links.map((link) => (
+                      <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+                    ))}
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
       <section class="section split-section" id="education" aria-labelledby="education-title">
         <div class="section-heading">
           <p class="eyebrow">Образование</p>
@@ -152,6 +242,7 @@ const projects = (await getCollection("projects")).sort(
           <div>
             <h3>{profile.education.title}</h3>
             <p>{profile.education.program}</p>
+            <blockquote>{profile.education.quote}</blockquote>
           </div>
           <dl>
             <div>
@@ -167,10 +258,11 @@ const projects = (await getCollection("projects")).sort(
               <dd>{profile.education.hours}</dd>
             </div>
           </dl>
+          <a class="button secondary diploma-link" href={profile.education.diplomaUrl} target="_blank" rel="noreferrer">Смотреть диплом</a>
         </div>
       </section>
 
-      <section class="section skills-section" aria-labelledby="skills-title">
+      <section class="section skills-section" id="skills" aria-labelledby="skills-title">
         <div class="section-heading">
           <p class="eyebrow">Инструменты</p>
           <h2 id="skills-title">Навыки для ежедневного управления проектами</h2>
@@ -183,7 +275,7 @@ const projects = (await getCollection("projects")).sort(
       <section class="section github-section" aria-labelledby="github-title">
         <div class="section-heading">
           <p class="eyebrow">GitHub</p>
-          <h2 id="github-title">Код и проектные артефакты</h2>
+          <h2 id="github-title">Мои пет-проекты</h2>
         </div>
         <div class="github-panel">
           <p>{profile.github.note}</p>
@@ -196,7 +288,7 @@ const projects = (await getCollection("projects")).sort(
                 </a>
               ))
             }
-            <a class="repo-button repo-button-featured" href={profile.github.projectRepo} target="_blank" rel="noreferrer">
+            <a class="repo-button" href={profile.github.projectRepo} target="_blank" rel="noreferrer">
               <span>Pixel Runner</span>
               <small>Открытый проект с web-game, лендингом и проектной документацией.</small>
             </a>
@@ -204,20 +296,78 @@ const projects = (await getCollection("projects")).sort(
         </div>
       </section>
 
-      <section class="contact" id="contact" aria-labelledby="contact-title">
-        <div>
+      <footer class="contact" id="contact" aria-labelledby="contact-title">
+        <div class="contact-copy">
           <p class="eyebrow">Контакты</p>
           <h2 id="contact-title">Готов обсудить digital или IT-проект</h2>
+          <div class="contact-actions">
+            <a href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Написать на email</a>
+            <a href={profile.telegram} target="_blank" rel="noreferrer">Написать в Telegram</a>
+            <a href={profile.github.publicRepos} target="_blank" rel="noreferrer">GitHub</a>
+          </div>
         </div>
-        <div class="contact-actions">
-          <a href={`mailto:${profile.email}`}>{profile.email}</a>
-          <a href={profile.telegram} target="_blank" rel="noreferrer">Написать в Telegram</a>
+        <form class="feedback-form contact-form" data-feedback-form data-form-endpoint={contactFormEndpoint} novalidate>
+          <div class="feedback-head">
+            <div>
+              <p class="eyebrow">Форма связи</p>
+              <h2>Напишите коротко, что вас заинтересовало</h2>
+              <p class="feedback-subtitle">Я свяжусь с вами в течение 1 часа.</p>
+            </div>
+          </div>
+
+          <label>
+            <span>Имя</span>
+            <input name="name" type="text" autocomplete="name" minlength="2" required placeholder="Как к вам обращаться" />
+          </label>
+
+          <label>
+            <span>Почта</span>
+            <input name="contact" type="email" autocomplete="email" required placeholder="email@example.com" />
+          </label>
+
+          <label>
+            <span>Тема обращения</span>
+            <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
+          </label>
+
+          <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.</p>
+          <p class="form-success" data-feedback-success hidden>Спасибо, сообщение отправлено. Я свяжусь с вами в течение 1 часа.</p>
+
+          <button class="button primary form-submit" type="submit">Отправить</button>
+        </form>
+        <div class="footer-classic" aria-label="Краткая информация">
+          <section>
+            <h3>Обо мне</h3>
+            <p>Project Manager для digital и IT-проектов. Помогаю собрать требования, план, бэклог, риски, запустить новые проекты с нуля и довести работу до понятного результата.</p>
+          </section>
+          <section>
+            <h3>Услуги</h3>
+            <ul>
+              <li>Сбор требований и постановка задач</li>
+              <li>Планирование сроков, бюджета и рисков</li>
+              <li>Координация команды и приемка результата</li>
+              <li>Запуск digital- и IT-проектов с нуля</li>
+              <li>Подготовка ТЗ, roadmap и проектных артефактов</li>
+              <li>Настройка бэклога, Kanban-доски и прозрачных статусов</li>
+              <li>Контроль подрядчиков, релизов и качества результата</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Навигация</h3>
+            <div class="footer-links">
+              <a href="#experience">Опыт</a>
+              <a href="#projects">Кейсы</a>
+              <a href="#artifacts">Артефакты</a>
+              <a href="#skills">Навыки</a>
+            </div>
+          </section>
         </div>
-      </section>
+        <a class="back-to-top" href="#top" aria-label="Вернуться наверх">Наверх</a>
+      </footer>
     </main>
 
     <dialog class="feedback-dialog" id="feedbackDialog" aria-labelledby="feedbackTitle">
-      <form class="feedback-form" id="feedbackForm" method="dialog" novalidate>
+      <form class="feedback-form" id="feedbackForm" method="dialog" data-feedback-form data-form-endpoint={contactFormEndpoint} novalidate>
         <div class="feedback-head">
           <div>
             <p class="eyebrow">Обратная связь</p>
@@ -226,22 +376,23 @@ const projects = (await getCollection("projects")).sort(
           <button class="dialog-close" type="button" data-feedback-close aria-label="Закрыть форму">×</button>
         </div>
 
-        <label>
-          <span>Имя</span>
-          <input name="name" type="text" autocomplete="name" required placeholder="Как к вам обращаться" />
-        </label>
+          <label>
+            <span>Имя</span>
+            <input name="name" type="text" autocomplete="name" minlength="2" required placeholder="Как к вам обращаться" />
+          </label>
 
-        <label>
-          <span>Почта, телефон или Telegram</span>
-          <input name="contact" type="text" autocomplete="email" required placeholder="email, +7... или @username" />
-        </label>
+          <label>
+            <span>Почта</span>
+            <input name="contact" type="email" autocomplete="email" required placeholder="email@example.com" />
+          </label>
 
         <label>
           <span>Тема обращения</span>
           <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
         </label>
 
-        <p class="form-error" data-feedback-error hidden>Заполните все поля. Тема обращения должна быть не короче 10 символов.</p>
+        <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.</p>
+        <p class="form-success" data-feedback-success hidden>Спасибо, сообщение отправлено. Я свяжусь с вами в течение 1 часа.</p>
 
         <button class="button primary form-submit" type="submit">Отправить</button>
       </form>
@@ -249,9 +400,46 @@ const projects = (await getCollection("projects")).sort(
 
     <script is:inline>
       const dialog = document.getElementById("feedbackDialog");
-      const form = document.getElementById("feedbackForm");
-      const error = document.querySelector("[data-feedback-error]");
-      const email = "nefrit333@gmail.com";
+      const root = document.documentElement;
+      const themeToggle = document.querySelector("[data-theme-toggle]");
+      const validationErrorText = "Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.";
+      const deliveryErrorText = "Не получилось отправить сообщение. Попробуйте еще раз или нажмите «Написать на email».";
+      let themeTransitionTimer;
+
+      const applyTheme = (theme, options = {}) => {
+        const { animate = false } = options;
+
+        if (animate) {
+          root.classList.add("theme-switching");
+          window.clearTimeout(themeTransitionTimer);
+          themeTransitionTimer = window.setTimeout(() => {
+            root.classList.remove("theme-switching");
+          }, 460);
+        }
+
+        root.dataset.theme = theme;
+
+        try {
+          localStorage.setItem("theme", theme);
+        } catch {
+          // Local storage can be unavailable in private browser modes.
+        }
+
+        if (themeToggle) {
+          const isLight = theme === "light";
+          themeToggle.setAttribute("aria-pressed", String(isLight));
+          themeToggle.setAttribute(
+            "aria-label",
+            isLight ? "Включить темную тему" : "Включить светлую тему",
+          );
+        }
+      };
+
+      applyTheme(root.dataset.theme === "light" ? "light" : "dark");
+
+      themeToggle?.addEventListener("click", () => {
+        applyTheme(root.dataset.theme === "light" ? "dark" : "light", { animate: true });
+      });
 
       document.querySelectorAll("[data-feedback-trigger]").forEach((trigger) => {
         trigger.addEventListener("click", () => {
@@ -273,34 +461,144 @@ const projects = (await getCollection("projects")).sort(
         }
       });
 
-      form?.addEventListener("submit", (event) => {
-        event.preventDefault();
+      document.querySelectorAll("[data-feedback-form]").forEach((feedbackForm) => {
+        const fields = Array.from(feedbackForm.querySelectorAll("input"));
+        const formError = feedbackForm.querySelector("[data-feedback-error]");
+        const formSuccess = feedbackForm.querySelector("[data-feedback-success]");
 
-        const data = new FormData(form);
-        const name = String(data.get("name") || "").trim();
-        const contact = String(data.get("contact") || "").trim();
-        const topic = String(data.get("topic") || "").trim();
-        const topicField = form.querySelector('input[name="topic"]');
+        const hideFeedback = () => {
+          formError?.setAttribute("hidden", "");
+          formSuccess?.setAttribute("hidden", "");
+        };
 
-        topicField?.setCustomValidity(
-          topic.length < 10 ? "Тема обращения должна быть не короче 10 символов." : "",
+        const showError = (message = validationErrorText) => {
+          formSuccess?.setAttribute("hidden", "");
+          if (formError) {
+            formError.textContent = message;
+            formError.removeAttribute("hidden");
+          }
+        };
+
+        const showSuccess = () => {
+          formError?.setAttribute("hidden", "");
+          formSuccess?.removeAttribute("hidden");
+        };
+
+        hideFeedback();
+
+        fields.forEach((field) => {
+          field.addEventListener("input", () => {
+            field.classList.remove("is-invalid");
+            field.setCustomValidity("");
+            hideFeedback();
+          });
+        });
+
+        feedbackForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const data = new FormData(feedbackForm);
+          const name = String(data.get("name") || "").trim();
+          const contact = String(data.get("contact") || "").trim();
+          const topic = String(data.get("topic") || "").trim();
+          const nameField = feedbackForm.querySelector('input[name="name"]');
+          const contactField = feedbackForm.querySelector('input[name="contact"]');
+          const topicField = feedbackForm.querySelector('input[name="topic"]');
+          const submitButton = feedbackForm.querySelector('button[type="submit"]');
+          const endpoint = feedbackForm.dataset.formEndpoint;
+          const nameLetterCount = (name.match(/[A-Za-zА-Яа-яЁё]/gu) || []).length;
+          const nameIsValid = /^[A-Za-zА-Яа-яЁё ]+$/u.test(name) && nameLetterCount >= 2;
+          const contactIsValid = contact.includes("@");
+          const topicIsValid = topic.length >= 10;
+
+          fields.forEach((field) => field.classList.remove("is-invalid"));
+          hideFeedback();
+
+          nameField?.setCustomValidity(nameIsValid ? "" : "Имя должно содержать только русские или английские буквы, не менее 2 букв.");
+          contactField?.setCustomValidity(contactIsValid ? "" : "Почта должна содержать @.");
+          topicField?.setCustomValidity(topicIsValid ? "" : "Тема обращения должна быть не короче 10 символов.");
+
+          if (!nameIsValid || !contactIsValid || !topicIsValid || !feedbackForm.checkValidity()) {
+            fields.forEach((field) => {
+              if (!field.checkValidity()) {
+                field.classList.add("is-invalid");
+              }
+            });
+            showError();
+            return;
+          }
+
+          if (!endpoint) {
+            showError(deliveryErrorText);
+            return;
+          }
+
+          fields.forEach((field) => field.classList.remove("is-invalid"));
+          nameField?.setCustomValidity("");
+          contactField?.setCustomValidity("");
+          topicField?.setCustomValidity("");
+
+          const previousButtonText = submitButton?.textContent || "Отправить";
+
+          if (submitButton) {
+            submitButton.textContent = "Отправляется";
+            submitButton.disabled = true;
+          }
+
+          try {
+            const payload = new FormData();
+            payload.append("name", name);
+            payload.append("email", contact);
+            payload.append("message", topic);
+            payload.append("_subject", `Обращение с сайта: ${topic}`);
+            payload.append("_captcha", "false");
+            payload.append("_template", "table");
+
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+              },
+              body: payload,
+            });
+
+            if (!response.ok) {
+              throw new Error("Form service rejected the submission");
+            }
+
+            showSuccess();
+            feedbackForm.reset();
+
+            window.setTimeout(() => {
+              feedbackForm.closest("dialog")?.close();
+            }, 900);
+          } catch {
+            showError(deliveryErrorText);
+          } finally {
+            if (submitButton) {
+              submitButton.textContent = previousButtonText;
+              submitButton.disabled = false;
+            }
+          }
+        });
+      });
+
+      const backToTop = document.querySelector(".back-to-top");
+      const offerSection = document.getElementById("offer");
+
+      if (backToTop && offerSection && "IntersectionObserver" in window) {
+        const backToTopObserver = new IntersectionObserver(
+          ([entry]) => {
+            backToTop.classList.toggle("is-visible", entry.boundingClientRect.top <= 0 || entry.isIntersecting);
+          },
+          {
+            rootMargin: "-28% 0px 0px 0px",
+            threshold: 0,
+          },
         );
 
-        if (!name || !contact || !topic || topic.length < 10 || !form.checkValidity()) {
-          error?.removeAttribute("hidden");
-          form.reportValidity();
-          return;
-        }
-
-        const subject = encodeURIComponent(`Обращение с сайта: ${topic}`);
-        const body = encodeURIComponent(`Имя: ${name}\nКонтакт: ${contact}\nТема: ${topic}`);
-
-        error?.setAttribute("hidden", "");
-        topicField?.setCustomValidity("");
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-        dialog?.close();
-        form.reset();
-      });
+        backToTopObserver.observe(offerSection);
+      }
     </script>
   </body>
 </html>
