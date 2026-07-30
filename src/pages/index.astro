@@ -46,13 +46,16 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#top"><span>Dmitriy Web</span></a>
+      <a class="brand" href="#top">
+        <span class="brand-full">Dmitriy Web</span>
+        <span class="brand-short" aria-hidden="true">ДФ</span>
+      </a>
       <nav class="nav" aria-label="Основная навигация">
-        <a href="#offer">Обо мне</a>
-        <a href="#skills">Навыки</a>
-        <a href="#projects">Проекты</a>
-        <a href="#artifacts">FAQ</a>
-        <a href="#contact">Контакты</a>
+        <a href="#offer" aria-label="Обо мне"><span class="nav-label">Обо мне</span><span class="nav-icon" aria-hidden="true">i</span></a>
+        <a href="#skills" aria-label="Навыки"><span class="nav-label">Навыки</span><span class="nav-icon" aria-hidden="true">#</span></a>
+        <a href="#projects" aria-label="Проекты"><span class="nav-label">Проекты</span><span class="nav-icon" aria-hidden="true">▦</span></a>
+        <a href="#artifacts" aria-label="FAQ"><span class="nav-label">FAQ</span><span class="nav-icon" aria-hidden="true">?</span></a>
+        <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">@</span></a>
       </nav>
       <button class="theme-action" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false">
         <span class="theme-icon theme-icon-light" aria-hidden="true">☾</span>
