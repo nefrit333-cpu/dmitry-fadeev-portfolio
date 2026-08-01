@@ -1,0 +1,43 @@
+---
+import "../styles/global.css";
+import { profile } from "../data/profile";
+
+const updatedAt = "01.08.2026";
+const basePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Согласие на обработку персональных данных - Dmitriy Web</title>
+  </head>
+  <body>
+    <main class="legal-page">
+      <a class="legal-back" href={basePath}>← На главную</a>
+      <article class="legal-document">
+        <p class="eyebrow">Документ</p>
+        <h1>Согласие на обработку персональных данных</h1>
+        <p>Дата обновления: {updatedAt}</p>
+
+        <h2>1. Согласие пользователя</h2>
+        <p>Отправляя форму на сайте, пользователь соглашается на обработку имени, email, темы обращения и текста сообщения.</p>
+
+        <h2>2. Цель обработки</h2>
+        <p>Данные обрабатываются для ответа на обращение, обсуждения возможного проекта и дальнейшей деловой коммуникации.</p>
+
+        <h2>3. Действия с данными</h2>
+        <p>С данными могут выполняться сбор, запись, хранение, уточнение, использование, передача через сервис отправки формы и удаление.</p>
+
+        <h2>4. Срок действия согласия</h2>
+        <p>Согласие действует до момента его отзыва пользователем. Отозвать согласие можно письмом на <a href={`mailto:${profile.email}`}>{profile.email}</a>.</p>
+
+        <h2>5. Удаление данных</h2>
+        <p>После отзыва согласия данные удаляются, если их хранение больше не требуется для ответа на обращение или соблюдения обязательных требований.</p>
+      </article>
+    </main>
+  </body>
+</html>

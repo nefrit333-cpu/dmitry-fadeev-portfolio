@@ -1,12 +1,11 @@
 ---
 title: "TTS Kazan"
-category: "WordPress migration"
-role: "Project Manager"
+category: "Миграция на WordPress"
+role: ""
+titleHref: "https://tts-kazan.ru/"
 order: 4
 stack: ["WordPress", "Figma", "SEO", "QA", "Content migration"]
-links:
-  - label: "Сайт TTS"
-    href: "https://tts-kazan.ru/"
+links: []
 outcomes:
   - "Подготовил коммерческое предложение и рамки миграции сайта на WordPress."
   - "Разложил работу на шаблоны страниц, адаптивную верстку, SEO, перенос контента и тестирование."

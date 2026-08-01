@@ -2,35 +2,41 @@
 
 [Открыть сайт](https://nefrit333-cpu.github.io/dmitry-fadeev-portfolio/)
 
-Статический сайт-портфолио Project Manager для digital, B2B и fashion-tech проектов.
+Статический сайт-портфолио Project Manager для digital-, B2B- и fashion-tech проектов. Сайт показывает опыт, кейсы, проектные артефакты, диплом Яндекс Практикума, публичные пет-проекты и форму связи.
 
-Сайт собран на Astro и публикуется через GitHub Pages. Внутри: краткое позиционирование, опыт, кейсы, образование, навыки, публичные GitHub-репозитории и форма обращения без перехода в почтовый клиент.
+## Текущая версия
 
-## Что внутри
+Актуальный релиз: `v1.1.0`.
 
-- премиальный одностраничный интерфейс;
-- кейсы по WID, Pixel Runner, CafeMam, TTS Kazan и IZMTEH;
-- коллекции контента Astro для опыта и проектов;
-- адаптивная верстка для desktop и mobile;
-- контактная форма с локальной валидацией и отправкой через FormSubmit;
-- GitHub Pages workflow для автоматической публикации.
+Что вошло в релиз:
+
+- премиальный темный интерфейс с переключением темы;
+- объединенный блок «Опыт и кейсы»;
+- кейсы WID, Pixel Runner, CafeMam, TTS Kazan, IZMTEH и Яндекс Практикум;
+- отдельный блок проектных артефактов с прямыми ссылками на Google Drive;
+- форма связи с валидацией, согласием на обработку данных и отправкой через FormSubmit;
+- страницы политики конфиденциальности и согласия на обработку персональных данных;
+- компактный мобильный хедер и адаптивная верстка для разных экранов.
+
+Подробная история изменений: [CHANGELOG.md](CHANGELOG.md).
 
 ## Стек
 
 - Astro;
 - TypeScript;
-- CSS без UI-фреймворка;
 - Astro Content Collections;
-- GitHub Pages.
+- CSS без UI-фреймворка;
+- GitHub Pages;
+- FormSubmit для отправки формы.
 
 ## Локальный запуск
 
 ```bash
 npm.cmd install
-npm.cmd run dev
+npm.cmd run dev -- --host 127.0.0.1 --port 4323
 ```
 
-По умолчанию локальный адрес разработки:
+Локальный адрес:
 
 ```text
 http://127.0.0.1:4323/dmitry-fadeev-portfolio/
@@ -48,17 +54,23 @@ npm.cmd run build
 npm.cmd run preview
 ```
 
-## Структура
+## Структура проекта
 
 ```text
 src/pages/index.astro          Главная страница
+src/pages/privacy.astro        Политика конфиденциальности
+src/pages/consent.astro        Согласие на обработку данных
 src/styles/global.css          Визуальная система и адаптив
-src/data/profile.ts            Основные данные профиля
+src/data/profile.ts            Основные данные профиля, ссылки и артефакты
 src/content/experience/*.md    Опыт
 src/content/projects/*.md      Кейсы
 public/images/                 Изображения
 .github/workflows/deploy.yml   Публикация на GitHub Pages
 ```
+
+## Контент
+
+Опыт и кейсы хранятся в Astro Content Collections. Для нового кейса нужно заполнить `title`, `category`, `role`, `order`, `stack`, `links` и `outcomes`. Основные контакты, метрики, навыки, диплом и ссылки на артефакты находятся в `src/data/profile.ts`.
 
 ## Публикация
 
@@ -66,10 +78,18 @@ public/images/                 Изображения
 
 После пуша в `master` GitHub Actions собирает Astro-проект и публикует его на GitHub Pages.
 
-Публичный адрес после успешного workflow:
+Публичный адрес:
 
 ```text
 https://nefrit333-cpu.github.io/dmitry-fadeev-portfolio/
 ```
 
-Форма связи отправляет данные на email через FormSubmit. Для первой реальной отправки сервис может попросить подтвердить адрес получателя.
+## Проверка перед релизом
+
+Перед публикацией обязательно запустить:
+
+```bash
+npm.cmd run build
+```
+
+Для UI-изменений дополнительно проверяются desktop и mobile viewport: отсутствие горизонтального скролла, читаемость карточек, работа формы, переключатель темы и корректность ссылок.

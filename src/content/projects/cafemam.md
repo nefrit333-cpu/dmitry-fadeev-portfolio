@@ -1,12 +1,11 @@
 ---
 title: "CafeMam"
-category: "Content platform"
-role: "Project Manager"
+category: "Контент-платформа"
+role: ""
+titleHref: "http://cafemam.ru/"
 order: 3
 stack: ["Product requirements", "UX structure", "Integrations", "Roadmap"]
-links:
-  - label: "Старый сайт"
-    href: "http://cafemam.ru/"
+links: []
 outcomes:
   - "Описал требования к социальной и контентной платформе для мам."
   - "Сформировал структуру модулей, страниц, ролей и пользовательских сценариев."

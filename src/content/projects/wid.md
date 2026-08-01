@@ -1,12 +1,11 @@
 ---
 title: "WID"
-category: "Fashion-tech product"
-role: "Project Manager"
+category: "Fashion-tech продукт"
+role: ""
+titleHref: "https://mywid.ru/"
 order: 2
 stack: ["Product requirements", "Kanban", "GitHub", "Backlog", "Stakeholder management", "QA"]
-links:
-  - label: "Сайт WID"
-    href: "https://mywid.ru/"
+links: []
 outcomes:
   - "Собрал требования и проектный контур для цифрового гардероба: роли, сценарии, зависимости и приоритеты."
   - "Выстроил работу через GitHub и Kanban: задачи стали прозрачнее для команды, подрядчиков и стейкхолдеров."

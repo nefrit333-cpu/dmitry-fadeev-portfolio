@@ -27,6 +27,7 @@ const projects = defineCollection({
     title: z.string(),
     category: z.string(),
     role: z.string(),
+    titleHref: z.url().optional(),
     order: z.number(),
     stack: z.array(z.string()).default([]),
     links: z

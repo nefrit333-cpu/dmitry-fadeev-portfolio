@@ -11,15 +11,23 @@ const experience = (await getCollection("experience")).sort(
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
+const timelineExperience = experience.filter(
+  (item) => !["Pixel Runner", "WID - цифровой гардероб"].includes(item.data.company),
+);
 
 const projectsWithPrimaryLinks = projects.map((project) => ({
   project,
-  primaryLink:
-    project.data.links.find((link) => /deploy|сайт|старый сайт/i.test(link.label)) ??
-    project.data.links[0],
+  primaryHref: project.data.titleHref ?? project.data.links[0]?.href,
 }));
+const keepShortWords = (value: string) =>
+  value.replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2})\s+(?=\S)/gu, "$1$2\u00A0");
 const cooperationSubject = encodeURIComponent("Предложение сотрудничества");
 const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
+const basePath = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const privacyUrl = `${basePath}privacy/`;
+const consentUrl = `${basePath}consent/`;
 ---
 
 <!doctype html>
@@ -52,9 +60,9 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
       </a>
       <nav class="nav" aria-label="Основная навигация">
         <a href="#offer" aria-label="Обо мне"><span class="nav-label">Обо мне</span><span class="nav-icon" aria-hidden="true">i</span></a>
+        <a href="#projects" aria-label="Опыт и кейсы"><span class="nav-label">Опыт и кейсы</span><span class="nav-icon" aria-hidden="true">▦</span></a>
         <a href="#skills" aria-label="Навыки"><span class="nav-label">Навыки</span><span class="nav-icon" aria-hidden="true">#</span></a>
-        <a href="#projects" aria-label="Проекты"><span class="nav-label">Проекты</span><span class="nav-icon" aria-hidden="true">▦</span></a>
-        <a href="#artifacts" aria-label="FAQ"><span class="nav-label">FAQ</span><span class="nav-icon" aria-hidden="true">?</span></a>
+        <a href="#artifacts" aria-label="Артефакты"><span class="nav-label">Артефакты</span><span class="nav-icon" aria-hidden="true">▤</span></a>
         <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">@</span></a>
       </nav>
       <button class="theme-action" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false">
@@ -68,14 +76,14 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
         <div class="hero-copy">
           <p class="eyebrow hero-eyebrow">{profile.name} / {profile.role}</p>
           <h1 id="hero-title">Управляю digital-проектами без хаоса</h1>
-          <p class="lead">{profile.headline}</p>
-          <p class="hero-summary">{profile.summary}</p>
+          <p class="lead">{keepShortWords(profile.headline)}</p>
+          <p class="hero-summary">{keepShortWords(profile.summary)}</p>
           <div class="actions" aria-label="Основные действия">
             <button class="button primary" type="button" data-feedback-trigger>Обсудить проект</button>
-            <a class="button secondary" href="#projects">Смотреть кейсы</a>
+            <a class="button secondary cta-secondary" href="#projects" role="button" aria-label="Кнопка: смотреть кейсы">Смотреть кейсы</a>
           </div>
           <div class="proof-strip" aria-label="Рабочие принципы">
-            {profile.proofPoints.map((point) => <span>{point}</span>)}
+            {profile.proofPoints.map((point) => <span>{keepShortWords(point)}</span>)}
           </div>
         </div>
 
@@ -89,10 +97,6 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
               loading="eager"
             />
           </div>
-          <figcaption class="hero-note">
-            <span>Project control</span>
-            <strong>requirements / backlog / delivery</strong>
-          </figcaption>
         </figure>
       </section>
 
@@ -100,8 +104,8 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
         {
           profile.metrics.map((metric) => (
             <div class="metric">
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
+              <strong>{keepShortWords(metric.value)}</strong>
+              {metric.label && <span>{keepShortWords(metric.label)}</span>}
             </div>
           ))
         }
@@ -112,7 +116,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           <p class="eyebrow">Подход</p>
           <h2 id="offer-title">Даже сложный проект должен быть понятным</h2>
           <p>
-            Моя задача - сделать так, чтобы бизнес видел движение, команда понимала приоритеты, а результат не терялся между встречами, задачами и правками.
+            {keepShortWords("Моя задача - сделать так, чтобы бизнес видел движение, команда понимала приоритеты, а результат не терялся между встречами, задачами и правками.")}
           </p>
         </div>
         <div class="offer-grid">
@@ -121,45 +125,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
               <article class="offer-card">
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))
-          }
-        </div>
-      </section>
-
-      <section class="section" id="experience" aria-labelledby="experience-title">
-        <div class="section-heading">
-          <p class="eyebrow">Опыт</p>
-          <h2 id="experience-title">Digital, B2B и fashion-tech</h2>
-        </div>
-        <div class="timeline">
-          {
-            experience.map((item) => (
-              <article class="timeline-item">
-                <div class="timeline-body">
-                  <h3>
-                    {item.data.companyLinks ? (
-                      <span class="company-links">
-                        {item.data.companyLinks.map((link, index) => (
-                          <>
-                            {index > 0 && <span class="company-separator">/</span>}
-                            <a class="title-link" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-                          </>
-                        ))}
-                      </span>
-                    ) : item.data.url ? (
-                      <a href={item.data.url} target="_blank" rel="noreferrer">{item.data.company}</a>
-                    ) : (
-                      item.data.company
-                    )}
-                  </h3>
-                  <p class="role">{item.data.role}</p>
-                  <p>{item.body}</p>
-                  <ul>
-                    {item.data.highlights.map((highlight) => <li>{highlight}</li>)}
-                  </ul>
-                </div>
+                <p>{keepShortWords(item.text)}</p>
               </article>
             ))
           }
@@ -168,29 +134,63 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
 
       <section class="section projects-section" id="projects" aria-labelledby="projects-title">
         <div class="section-heading">
-          <p class="eyebrow">Кейсы</p>
-          <h2 id="projects-title">Проекты, где важны структура, скорость и приемка</h2>
+          <p class="eyebrow">Опыт и кейсы</p>
+          <h2 id="projects-title">Digital, B2B и fashion-tech проекты</h2>
         </div>
+        <h3 class="project-section-label">Опыт</h3>
+        <div class="project-grid project-experience">
+          {
+            timelineExperience.map((item) => (
+              <article class="project-card experience-card">
+                <div class="project-topline">
+                  <span>Experience</span>
+                  <span>{item.data.role}</span>
+                </div>
+                <h3>
+                  {item.data.companyLinks ? (
+                    <span class="company-links">
+                      {item.data.companyLinks.map((link, index) => (
+                        <>
+                          {index > 0 && <span class="company-separator">/</span>}
+                          <a class="title-link" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
+                        </>
+                      ))}
+                    </span>
+                  ) : item.data.url ? (
+                    <a href={item.data.url} target="_blank" rel="noreferrer">{item.data.company}</a>
+                  ) : (
+                    item.data.company
+                  )}
+                </h3>
+                <p>{keepShortWords(item.body ?? "")}</p>
+                <ul>
+                  {item.data.highlights.map((highlight) => <li>{keepShortWords(highlight)}</li>)}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+        <h3 class="project-section-label">Кейсы</h3>
         <div class="project-grid">
           {
-            projectsWithPrimaryLinks.map(({ project, primaryLink }) => (
+            projectsWithPrimaryLinks.map(({ project, primaryHref }) => (
               <article class="project-card">
                 <div class="project-topline">
                   <span>{project.data.category}</span>
-                  <span>{project.data.role}</span>
+                  {project.data.role && <span>{project.data.role}</span>}
                 </div>
                 <h3>
-                  {primaryLink ? (
-                    <a class="title-link" href={primaryLink.href} target="_blank" rel="noreferrer">
+                  {primaryHref ? (
+                    <a class="title-link" href={primaryHref} target="_blank" rel="noreferrer">
                       {project.data.title}
                     </a>
                   ) : (
                     project.data.title
                   )}
                 </h3>
-                <p>{project.body}</p>
+                <p>{keepShortWords(project.body ?? "")}</p>
                 <ul>
-                  {project.data.outcomes.map((outcome) => <li>{outcome}</li>)}
+                  {project.data.outcomes.map((outcome) => <li>{keepShortWords(outcome)}</li>)}
                 </ul>
                 {project.data.stack.length > 0 && (
                   <div class="tags" aria-label={`Технологии и инструменты проекта ${project.data.title}`}>
@@ -223,7 +223,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
                   <div class="artifact-group-head">
                     <h3>{group.title}</h3>
                   </div>
-                  <p>{group.text}</p>
+                  <p>{keepShortWords(group.text)}</p>
                   <div class="artifact-links" aria-label={`Артефакты: ${group.title}`}>
                     {group.links.map((link) => (
                       <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
@@ -239,28 +239,13 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
       <section class="section split-section" id="education" aria-labelledby="education-title">
         <div class="section-heading">
           <p class="eyebrow">Образование</p>
-          <h2 id="education-title">Диплом Яндекса по управлению IT-проектами</h2>
+          <h2 id="education-title">Диплом Яндекса</h2>
         </div>
-        <div class="education-panel">
+        <div class="education-panel education-panel-compact">
           <div>
             <h3>{profile.education.title}</h3>
-            <p>{profile.education.program}</p>
-            <blockquote>{profile.education.quote}</blockquote>
+            <p>{keepShortWords(`${profile.education.program}. ${profile.education.qualification}, ${profile.education.hours}.`)}</p>
           </div>
-          <dl>
-            <div>
-              <dt>Квалификация</dt>
-              <dd>{profile.education.qualification}</dd>
-            </div>
-            <div>
-              <dt>Период</dt>
-              <dd>{profile.education.period}</dd>
-            </div>
-            <div>
-              <dt>Объем</dt>
-              <dd>{profile.education.hours}</dd>
-            </div>
-          </dl>
           <a class="button secondary diploma-link" href={profile.education.diplomaUrl} target="_blank" rel="noreferrer">Смотреть диплом</a>
         </div>
       </section>
@@ -281,20 +266,16 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           <h2 id="github-title">Мои пет-проекты</h2>
         </div>
         <div class="github-panel">
-          <p>{profile.github.note}</p>
+          <p>{keepShortWords(profile.github.note)}</p>
           <div class="repo-actions" aria-label="Публичные репозитории GitHub">
             {
               profile.github.repos.map((repo) => (
                 <a class="repo-button" href={repo.href} target="_blank" rel="noreferrer">
                   <span>{repo.name}</span>
-                  <small>{repo.description}</small>
+                  <small>{keepShortWords(repo.description)}</small>
                 </a>
               ))
             }
-            <a class="repo-button" href={profile.github.projectRepo} target="_blank" rel="noreferrer">
-              <span>Pixel Runner</span>
-              <small>Открытый проект с web-game, лендингом и проектной документацией.</small>
-            </a>
           </div>
         </div>
       </section>
@@ -305,7 +286,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           <h2 id="contact-title">Готов обсудить digital или IT-проект</h2>
           <div class="contact-actions">
             <a href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Написать на email</a>
-            <a href={profile.telegram} target="_blank" rel="noreferrer">Написать в Telegram</a>
+            <a href={profile.vk} target="_blank" rel="noreferrer">Написать в VK</a>
             <a href={profile.github.publicRepos} target="_blank" rel="noreferrer">GitHub</a>
           </div>
         </div>
@@ -314,7 +295,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
             <div>
               <p class="eyebrow">Форма связи</p>
               <h2>Напишите коротко, что вас заинтересовало</h2>
-              <p class="feedback-subtitle">Я свяжусь с вами в течение 1 часа.</p>
+              <p class="feedback-subtitle">{keepShortWords("Я свяжусь с вами в течение 1 часа.")}</p>
             </div>
           </div>
 
@@ -333,39 +314,22 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
             <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
           </label>
 
-          <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.</p>
+          <label class="consent-check">
+            <input name="consent" type="checkbox" required />
+            <span>
+              Согласен с <a href={privacyUrl} target="_blank">политикой конфиденциальности</a> и <a href={consentUrl} target="_blank">обработкой персональных данных</a>.
+            </span>
+          </label>
+
+          <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов, согласие - отмечено.</p>
           <p class="form-success" data-feedback-success hidden>Спасибо, сообщение отправлено. Я свяжусь с вами в течение 1 часа.</p>
 
           <button class="button primary form-submit" type="submit">Отправить</button>
         </form>
-        <div class="footer-classic" aria-label="Краткая информация">
-          <section>
-            <h3>Обо мне</h3>
-            <p>Project Manager для digital и IT-проектов. Помогаю собрать требования, план, бэклог, риски, запустить новые проекты с нуля и довести работу до понятного результата.</p>
-          </section>
-          <section>
-            <h3>Услуги</h3>
-            <ul>
-              <li>Сбор требований и постановка задач</li>
-              <li>Планирование сроков, бюджета и рисков</li>
-              <li>Координация команды и приемка результата</li>
-              <li>Запуск digital- и IT-проектов с нуля</li>
-              <li>Подготовка ТЗ, roadmap и проектных артефактов</li>
-              <li>Настройка бэклога, Kanban-доски и прозрачных статусов</li>
-              <li>Контроль подрядчиков, релизов и качества результата</li>
-            </ul>
-          </section>
-          <section>
-            <h3>Навигация</h3>
-            <div class="footer-links">
-              <a href="#experience">Опыт</a>
-              <a href="#projects">Кейсы</a>
-              <a href="#artifacts">Артефакты</a>
-              <a href="#skills">Навыки</a>
-            </div>
-          </section>
+        <div class="legal-links" aria-label="Юридическая информация">
+          <a href={privacyUrl}>Политика конфиденциальности</a>
+          <a href={consentUrl}>Согласие на обработку данных</a>
         </div>
-        <a class="back-to-top" href="#top" aria-label="Вернуться наверх">Наверх</a>
       </footer>
     </main>
 
@@ -394,7 +358,14 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
         </label>
 
-        <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.</p>
+        <label class="consent-check">
+          <input name="consent" type="checkbox" required />
+          <span>
+            Согласен с <a href={privacyUrl} target="_blank">политикой конфиденциальности</a> и <a href={consentUrl} target="_blank">обработкой персональных данных</a>.
+          </span>
+        </label>
+
+        <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов, согласие - отмечено.</p>
         <p class="form-success" data-feedback-success hidden>Спасибо, сообщение отправлено. Я свяжусь с вами в течение 1 часа.</p>
 
         <button class="button primary form-submit" type="submit">Отправить</button>
@@ -405,7 +376,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
       const dialog = document.getElementById("feedbackDialog");
       const root = document.documentElement;
       const themeToggle = document.querySelector("[data-theme-toggle]");
-      const validationErrorText = "Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов.";
+      const validationErrorText = "Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов, согласие - отмечено.";
       const deliveryErrorText = "Не получилось отправить сообщение. Попробуйте еще раз или нажмите «Написать на email».";
       let themeTransitionTimer;
 
@@ -507,12 +478,14 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           const nameField = feedbackForm.querySelector('input[name="name"]');
           const contactField = feedbackForm.querySelector('input[name="contact"]');
           const topicField = feedbackForm.querySelector('input[name="topic"]');
+          const consentField = feedbackForm.querySelector('input[name="consent"]');
           const submitButton = feedbackForm.querySelector('button[type="submit"]');
           const endpoint = feedbackForm.dataset.formEndpoint;
           const nameLetterCount = (name.match(/[A-Za-zА-Яа-яЁё]/gu) || []).length;
           const nameIsValid = /^[A-Za-zА-Яа-яЁё ]+$/u.test(name) && nameLetterCount >= 2;
           const contactIsValid = contact.includes("@");
           const topicIsValid = topic.length >= 10;
+          const consentIsValid = consentField?.checked === true;
 
           fields.forEach((field) => field.classList.remove("is-invalid"));
           hideFeedback();
@@ -520,8 +493,9 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           nameField?.setCustomValidity(nameIsValid ? "" : "Имя должно содержать только русские или английские буквы, не менее 2 букв.");
           contactField?.setCustomValidity(contactIsValid ? "" : "Почта должна содержать @.");
           topicField?.setCustomValidity(topicIsValid ? "" : "Тема обращения должна быть не короче 10 символов.");
+          consentField?.setCustomValidity(consentIsValid ? "" : "Нужно согласие на обработку персональных данных.");
 
-          if (!nameIsValid || !contactIsValid || !topicIsValid || !feedbackForm.checkValidity()) {
+          if (!nameIsValid || !contactIsValid || !topicIsValid || !consentIsValid || !feedbackForm.checkValidity()) {
             fields.forEach((field) => {
               if (!field.checkValidity()) {
                 field.classList.add("is-invalid");
@@ -540,6 +514,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           nameField?.setCustomValidity("");
           contactField?.setCustomValidity("");
           topicField?.setCustomValidity("");
+          consentField?.setCustomValidity("");
 
           const previousButtonText = submitButton?.textContent || "Отправить";
 
@@ -553,6 +528,7 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
             payload.append("name", name);
             payload.append("email", contact);
             payload.append("message", topic);
+            payload.append("consent", "Получено согласие на обработку персональных данных");
             payload.append("_subject", `Обращение с сайта: ${topic}`);
             payload.append("_captcha", "false");
             payload.append("_template", "table");
@@ -585,23 +561,6 @@ const contactFormEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
           }
         });
       });
-
-      const backToTop = document.querySelector(".back-to-top");
-      const offerSection = document.getElementById("offer");
-
-      if (backToTop && offerSection && "IntersectionObserver" in window) {
-        const backToTopObserver = new IntersectionObserver(
-          ([entry]) => {
-            backToTop.classList.toggle("is-visible", entry.boundingClientRect.top <= 0 || entry.isIntersecting);
-          },
-          {
-            rootMargin: "-28% 0px 0px 0px",
-            threshold: 0,
-          },
-        );
-
-        backToTopObserver.observe(offerSection);
-      }
     </script>
   </body>
 </html>
