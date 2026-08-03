@@ -28,6 +28,7 @@ const basePath = import.meta.env.BASE_URL.endsWith("/")
   : `${import.meta.env.BASE_URL}/`;
 const privacyUrl = `${basePath}privacy/`;
 const consentUrl = `${basePath}consent/`;
+const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")}`;
 ---
 
 <!doctype html>
@@ -59,11 +60,11 @@ const consentUrl = `${basePath}consent/`;
         <span class="brand-short" aria-hidden="true">ДФ</span>
       </a>
       <nav class="nav" aria-label="Основная навигация">
-        <a href="#offer" aria-label="Обо мне"><span class="nav-label">Обо мне</span><span class="nav-icon" aria-hidden="true">i</span></a>
-        <a href="#projects" aria-label="Опыт и кейсы"><span class="nav-label">Опыт и кейсы</span><span class="nav-icon" aria-hidden="true">▦</span></a>
-        <a href="#skills" aria-label="Навыки"><span class="nav-label">Навыки</span><span class="nav-icon" aria-hidden="true">#</span></a>
-        <a href="#artifacts" aria-label="Артефакты"><span class="nav-label">Артефакты</span><span class="nav-icon" aria-hidden="true">▤</span></a>
-        <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">@</span></a>
+        <a href="#education" aria-label="Диплом"><span class="nav-label">Диплом</span><span class="nav-icon" aria-hidden="true">Диплом</span></a>
+        <a href="#projects" aria-label="Опыт и кейсы"><span class="nav-label">Опыт</span><span class="nav-icon" aria-hidden="true">Опыт</span></a>
+        <a href="#artifacts" aria-label="Артефакты"><span class="nav-label">Артефакты</span><span class="nav-icon" aria-hidden="true">Артефакты</span></a>
+        <a href="#pet-projects" aria-label="Мои проекты"><span class="nav-label">Мои проекты</span><span class="nav-icon" aria-hidden="true">Мои проекты</span></a>
+        <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">Связь</span></a>
       </nav>
       <button class="theme-action" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false">
         <span class="theme-icon theme-icon-light" aria-hidden="true">☾</span>
@@ -80,10 +81,6 @@ const consentUrl = `${basePath}consent/`;
           <p class="hero-summary">{keepShortWords(profile.summary)}</p>
           <div class="actions" aria-label="Основные действия">
             <button class="button primary" type="button" data-feedback-trigger>Обсудить проект</button>
-            <a class="button secondary cta-secondary" href="#projects" role="button" aria-label="Кнопка: смотреть кейсы">Смотреть кейсы</a>
-          </div>
-          <div class="proof-strip" aria-label="Рабочие принципы">
-            {profile.proofPoints.map((point) => <span>{keepShortWords(point)}</span>)}
           </div>
         </div>
 
@@ -100,35 +97,18 @@ const consentUrl = `${basePath}consent/`;
         </figure>
       </section>
 
-      <section class="metrics" aria-label="Ключевые показатели">
-        {
-          profile.metrics.map((metric) => (
-            <div class="metric">
-              <strong>{keepShortWords(metric.value)}</strong>
-              {metric.label && <span>{keepShortWords(metric.label)}</span>}
-            </div>
-          ))
-        }
-      </section>
-
-      <section class="section offer-section" id="offer" aria-labelledby="offer-title">
+      <section class="section split-section education-section" id="education" aria-labelledby="education-title">
         <div class="section-heading">
-          <p class="eyebrow">Подход</p>
-          <h2 id="offer-title">Даже сложный проект должен быть понятным</h2>
-          <p>
-            {keepShortWords("Моя задача - сделать так, чтобы бизнес видел движение, команда понимала приоритеты, а результат не терялся между встречами, задачами и правками.")}
-          </p>
+          <p class="eyebrow">Диплом</p>
+          <h2 id="education-title">Яндекс Практикум по управлению IT-проектами</h2>
         </div>
-        <div class="offer-grid">
-          {
-            profile.offer.map((item, index) => (
-              <article class="offer-card">
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <h3>{item.title}</h3>
-                <p>{keepShortWords(item.text)}</p>
-              </article>
-            ))
-          }
+        <div class="education-panel education-panel-compact">
+          <div>
+            <h3>{profile.education.title}</h3>
+            <p>{keepShortWords(`${profile.education.program}. ${profile.education.qualification}, ${profile.education.hours}.`)}</p>
+            <p>{keepShortWords(profile.education.quote)}</p>
+          </div>
+          <a class="button secondary diploma-link" href={diplomaUrl} target="_blank" rel="noreferrer">Смотреть диплом</a>
         </div>
       </section>
 
@@ -136,9 +116,17 @@ const consentUrl = `${basePath}consent/`;
         <div class="section-heading">
           <p class="eyebrow">Опыт и кейсы</p>
           <h2 id="projects-title">Digital, B2B и fashion-tech проекты</h2>
+          <div class="compact-skills" aria-label="Ключевые навыки">
+            {profile.skills.slice(0, 10).map((skill) => <span>{skill}</span>)}
+          </div>
         </div>
-        <h3 class="project-section-label">Опыт</h3>
-        <div class="project-grid project-experience">
+        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="experience" aria-controls="mobile-experience-panel" aria-expanded="false">
+          <span>Опыт</span>
+          <span aria-hidden="true">Открыть</span>
+        </button>
+        <div class="mobile-disclosure-panel" id="mobile-experience-panel" data-mobile-panel="experience">
+          <h3 class="project-section-label">Опыт</h3>
+          <div class="project-grid project-experience">
           {
             timelineExperience.map((item) => (
               <article class="project-card experience-card">
@@ -169,9 +157,15 @@ const consentUrl = `${basePath}consent/`;
               </article>
             ))
           }
+          </div>
         </div>
-        <h3 class="project-section-label">Кейсы</h3>
-        <div class="project-grid">
+        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="cases" aria-controls="mobile-cases-panel" aria-expanded="false">
+          <span>Кейсы</span>
+          <span aria-hidden="true">Открыть</span>
+        </button>
+        <div class="mobile-disclosure-panel" id="mobile-cases-panel" data-mobile-panel="cases">
+          <h3 class="project-section-label">Кейсы</h3>
+          <div class="project-grid">
           {
             projectsWithPrimaryLinks.map(({ project, primaryHref }) => (
               <article class="project-card">
@@ -197,16 +191,10 @@ const consentUrl = `${basePath}consent/`;
                     {project.data.stack.map((tag) => <span>{tag}</span>)}
                   </div>
                 )}
-                {project.data.links.length > 0 && (
-                  <div class="links">
-                    {project.data.links.map((link) => (
-                      <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-                    ))}
-                  </div>
-                )}
               </article>
             ))
           }
+          </div>
         </div>
       </section>
 
@@ -215,7 +203,11 @@ const consentUrl = `${basePath}consent/`;
           <p class="eyebrow">PM documentation</p>
           <h2 id="artifacts-title">Проектные артефакты</h2>
         </div>
-        <div class="artifacts-panel">
+        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="artifacts" aria-controls="mobile-artifacts-panel" aria-expanded="false">
+          <span>Проектные артефакты</span>
+          <span aria-hidden="true">Открыть</span>
+        </button>
+        <div class="artifacts-panel mobile-disclosure-panel" id="mobile-artifacts-panel" data-mobile-panel="artifacts">
           <div class="artifact-groups">
             {
               profile.artifacts.featuredGroups.map((group) => (
@@ -236,36 +228,16 @@ const consentUrl = `${basePath}consent/`;
         </div>
       </section>
 
-      <section class="section split-section" id="education" aria-labelledby="education-title">
-        <div class="section-heading">
-          <p class="eyebrow">Образование</p>
-          <h2 id="education-title">Диплом Яндекса</h2>
-        </div>
-        <div class="education-panel education-panel-compact">
-          <div>
-            <h3>{profile.education.title}</h3>
-            <p>{keepShortWords(`${profile.education.program}. ${profile.education.qualification}, ${profile.education.hours}.`)}</p>
-          </div>
-          <a class="button secondary diploma-link" href={profile.education.diplomaUrl} target="_blank" rel="noreferrer">Смотреть диплом</a>
-        </div>
-      </section>
-
-      <section class="section skills-section" id="skills" aria-labelledby="skills-title">
-        <div class="section-heading">
-          <p class="eyebrow">Инструменты</p>
-          <h2 id="skills-title">Навыки для ежедневного управления проектами</h2>
-        </div>
-        <div class="skill-list">
-          {profile.skills.map((skill) => <span>{skill}</span>)}
-        </div>
-      </section>
-
-      <section class="section github-section" aria-labelledby="github-title">
+      <section class="section github-section" id="pet-projects" aria-labelledby="github-title">
         <div class="section-heading">
           <p class="eyebrow">GitHub</p>
-          <h2 id="github-title">Мои пет-проекты</h2>
+          <h2 id="github-title">Мои проекты</h2>
         </div>
-        <div class="github-panel">
+        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="pet-projects" aria-controls="mobile-pet-projects-panel" aria-expanded="false">
+          <span>Пет-проекты</span>
+          <span aria-hidden="true">Открыть</span>
+        </button>
+        <div class="github-panel mobile-disclosure-panel" id="mobile-pet-projects-panel" data-mobile-panel="pet-projects">
           <p>{keepShortWords(profile.github.note)}</p>
           <div class="repo-actions" aria-label="Публичные репозитории GitHub">
             {
@@ -414,6 +386,61 @@ const consentUrl = `${basePath}consent/`;
       themeToggle?.addEventListener("click", () => {
         applyTheme(root.dataset.theme === "light" ? "dark" : "light", { animate: true });
       });
+
+      const mobileDisclosureQuery = window.matchMedia("(max-width: 560px)");
+      const mobileDisclosureButtons = Array.from(document.querySelectorAll("[data-mobile-toggle]"));
+
+      const syncMobileDisclosures = () => {
+        const isMobile = mobileDisclosureQuery.matches;
+        root.classList.toggle("mobile-disclosure-ready", isMobile);
+
+        mobileDisclosureButtons.forEach((button) => {
+          const panel = document.getElementById(button.getAttribute("aria-controls") || "");
+
+          if (!panel) {
+            return;
+          }
+
+          if (isMobile && panel.dataset.mobilePrepared !== "true") {
+            panel.classList.remove("is-open");
+            panel.dataset.mobilePrepared = "true";
+          }
+
+          if (!isMobile) {
+            panel.classList.add("is-open");
+          }
+
+          const isOpen = panel.classList.contains("is-open");
+          const stateLabel = button.querySelector("span:last-child");
+          button.setAttribute("aria-expanded", String(isOpen));
+
+          if (stateLabel) {
+            stateLabel.textContent = isOpen ? "Скрыть" : "Открыть";
+          }
+        });
+      };
+
+      mobileDisclosureButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const panel = document.getElementById(button.getAttribute("aria-controls") || "");
+
+          if (!panel || !mobileDisclosureQuery.matches) {
+            return;
+          }
+
+          panel.classList.toggle("is-open");
+          const isOpen = panel.classList.contains("is-open");
+          const stateLabel = button.querySelector("span:last-child");
+          button.setAttribute("aria-expanded", String(isOpen));
+
+          if (stateLabel) {
+            stateLabel.textContent = isOpen ? "Скрыть" : "Открыть";
+          }
+        });
+      });
+
+      mobileDisclosureQuery.addEventListener?.("change", syncMobileDisclosures);
+      syncMobileDisclosures();
 
       document.querySelectorAll("[data-feedback-trigger]").forEach((trigger) => {
         trigger.addEventListener("click", () => {

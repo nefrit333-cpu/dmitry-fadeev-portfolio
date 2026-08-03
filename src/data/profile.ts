@@ -2,9 +2,9 @@ export const profile = {
   name: "Дмитрий Фадеев",
   role: "Project Manager",
   headline:
-    "Project Manager для digital- и IT-проектов: собираю требования, выстраиваю ритм команды и довожу запуск до понятного результата.",
+    "Project Manager для digital- и IT-проектов: требования, сроки, команда и понятный запуск без хаоса.",
   summary:
-    "Помогаю бизнесу пройти путь от идеи и хаоса задач к управляемому плану: бэклог, сроки, риски, коммуникация, приемка и прозрачный статус для всех участников.",
+    "Беру на себя структуру проекта: собираю вводные, фиксирую границы, веду бэклог, риски, приемку и статус для всех участников.",
   email: "nefrit333@gmail.com",
   telegram: "https://t.me/dmitriy_fadeev1809",
   telegramLabel: "@dmitriy_fadeev1809",
@@ -60,11 +60,11 @@ export const profile = {
     title: "Яндекс Практикум",
     program: "Расширенный курс менеджер проектов",
     quote:
-      "Обучение в Яндекс Практикуме показало IT-проекты под другим углом: я взял свой управленческий опыт и применил его в нужном стеке: требования, бэклог, риски, приемка и коммуникация с командой.",
+      "«Обучение в Яндекс Практикуме показало IT-проекты под другим углом: я взял свой управленческий опыт и применил его в нужном стеке: требования, бэклог, риски, приемка и коммуникация с командой.»",
     qualification: "Менеджер по информационным технологиям",
     period: "17.07.2025 - 26.03.2026",
     hours: "305 часов",
-    diplomaUrl: "https://drive.google.com/file/d/1IwfwEoT1mGfmwKyoyrfG76Gdy-ZHuhBS/view?usp=drivesdk",
+    diplomaUrl: "/docs/yandex-diploma-dmitry-fadeev.pdf",
   },
   artifacts: {
     sourceFolder: "https://drive.google.com/drive/folders/1LtI1e40Z-mmgPF7K9Rs90uHuaeVXIB06?usp=sharing",
@@ -85,12 +85,12 @@ export const profile = {
         links: [{ label: "Открыть папку", href: "https://drive.google.com/drive/folders/1RmQZqBHCpa2w2EPytZkAb9wRvvUp2dpk?usp=drive_link" }],
       },
       {
-        title: "CafeMam: продуктовая структура",
+        title: "Продуктовая структура",
         text: "Папка с ТЗ, навигацией, картой разделов и разбором ключевых страниц продукта CafeMam.",
         links: [{ label: "Открыть папку", href: "https://drive.google.com/drive/folders/1cYCkGKFUpwQEsENs7gkmkUL8s8FWCwNA?usp=drive_link" }],
       },
       {
-        title: "TTS: анализ, структура и прототипы",
+        title: "Анализ, структура и прототипы",
         text: "Папка с КП, сметами, структурой блоков, анализом конкурентов, прототипом и техническими материалами TTS.",
         links: [{ label: "Открыть папку", href: "https://drive.google.com/drive/folders/1rXb9uRT1zUUv8G4oVftVeoRX0Ttd-Amn?usp=drive_link" }],
       },
@@ -103,17 +103,17 @@ export const profile = {
       "Публичные репозитории собраны отдельными ссылками: можно быстро открыть код, стек, документацию и проектные артефакты.",
     repos: [
       {
-        name: "spine-flow",
+        name: "Spine Flow",
         href: "https://github.com/nefrit333-cpu/spine-flow",
         description: "PWA с короткими практиками для подвижности и мягкой разминки на iPhone.",
       },
       {
-        name: "pogoda-seychas",
+        name: "Pogoda Seychas",
         href: "https://github.com/nefrit333-cpu/pogoda-seychas",
         description: "Одностраничный Laravel-сайт погоды с геолокацией и Vercel-экспортом.",
       },
       {
-        name: "my-first-site",
+        name: "My First Site",
         href: "https://github.com/nefrit333-cpu/my-first-site",
         description: "Учебный сайт-портфолио frontend-разработчика на HTML, CSS и JavaScript.",
       },
