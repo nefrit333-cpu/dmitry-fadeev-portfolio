@@ -3,7 +3,11 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import "../styles/global.css";
 import { profile } from "../data/profile";
-import portrait from "../../public/images/dmitry-fadeev.png";
+import portrait from "../../public/images/dmitry-fadeev-editorial.png";
+import projectAbstract1 from "../../public/images/figma/project-abstract-1.png";
+import projectAbstract2 from "../../public/images/figma/project-abstract-2.png";
+import projectAbstract3 from "../../public/images/figma/project-abstract-3.png";
+import projectAbstract4 from "../../public/images/figma/project-abstract-4.png";
 
 const experience = (await getCollection("experience")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -11,14 +15,65 @@ const experience = (await getCollection("experience")).sort(
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const timelineExperience = experience.filter(
-  (item) => !["Pixel Runner", "WID - цифровой гардероб"].includes(item.data.company),
-);
-
-const projectsWithPrimaryLinks = projects.map((project) => ({
-  project,
-  primaryHref: project.data.titleHref ?? project.data.links[0]?.href,
-}));
+const projectVisuals = [projectAbstract1, projectAbstract2, projectAbstract3, projectAbstract4];
+const projectByTitle = (title: string) => projects.find((project) => project.data.title === title);
+const experienceByCompany = (company: string) => experience.find((item) => item.data.company === company);
+const widProject = projectByTitle("WID");
+const pixelProject = projectByTitle("Pixel Runner");
+const w3promoExperience = experienceByCompany("W3Promo");
+const roviExperience = experienceByCompany("РОВИ Факторинг Плюс / Дельта Лизинг");
+const keyCases = [
+  {
+    title: "WID",
+    context: "Product / fashion-tech",
+    contribution: "Требования, бэклог, Kanban, зависимости и согласования внутри продукта.",
+    proof: "Backlog / QA",
+    href: widProject?.data.titleHref,
+    image: projectVisuals[0],
+  },
+  {
+    title: "W3Promo",
+    context: "Digital / агентский масштаб",
+    contribution: "До 10 проектов, подрядчики, сроки, бюджеты, сметы и проектная документация.",
+    proof: "Roadmap / смета",
+    href: w3promoExperience?.data.url,
+    image: projectVisuals[1],
+  },
+  {
+    title: "Pixel Runner",
+    context: "IT / игра и лендинг",
+    contribution: "Механика, лидерборд, античит, интеграции, ТЗ и критерии приемки.",
+    proof: "ТЗ / acceptance",
+    href: pixelProject?.data.titleHref,
+    image: projectVisuals[2],
+  },
+];
+const artifactCards = [
+  {
+    title: "Roadmap / Risk map",
+    text: "Этапы, сроки, точки контроля и риски проекта.",
+    href: profile.artifacts.featuredGroups[0]?.links[0]?.href,
+    variant: "roadmap",
+  },
+  {
+    title: "Backlog",
+    text: "Задачи, приоритеты и границы работ.",
+    href: profile.artifacts.featuredGroups[1]?.links[0]?.href,
+    variant: "backlog",
+  },
+  {
+    title: "QA checklist",
+    text: "Критерии приемки и контроль качества.",
+    href: profile.artifacts.featuredGroups[0]?.links[0]?.href,
+    variant: "qa",
+  },
+  {
+    title: "ТЗ / структура страниц",
+    text: "Технический контур и передача задач в разработку.",
+    href: profile.artifacts.featuredGroups[2]?.links[0]?.href,
+    variant: "spec",
+  },
+];
 const keepShortWords = (value: string) =>
   value.replace(/(^|\s)([A-Za-zА-Яа-яЁё]{1,2})\s+(?=\S)/gu, "$1$2\u00A0");
 const cooperationSubject = encodeURIComponent("Предложение сотрудничества");
@@ -37,7 +92,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
     <meta charset="UTF-8" />
     <meta
       name="description"
-      content="Премиальное портфолио Дмитрия Фадеева, Project Manager для digital, B2B и fashion-tech проектов."
+      content="Дмитрий Фадеев, Project Manager IT-проектов: требования, сроки, команда, бриф, аналитика, бэклог, риски, ТЗ, приемка, статусы."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{profile.name} - {profile.role}</title>
@@ -53,254 +108,169 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       })();
     </script>
   </head>
-  <body>
+  <body class="figma-remake">
     <header class="site-header">
       <a class="brand" href="#top">
         <span class="brand-full">Dmitriy Web</span>
         <span class="brand-short" aria-hidden="true">ДФ</span>
       </a>
       <nav class="nav" aria-label="Основная навигация">
-        <a href="#education" aria-label="Диплом"><span class="nav-label">Диплом</span><span class="nav-icon" aria-hidden="true">Диплом</span></a>
-        <a href="#projects" aria-label="Опыт и кейсы"><span class="nav-label">Опыт</span><span class="nav-icon" aria-hidden="true">Опыт</span></a>
+        <a href="#top" aria-label="Главная"><span class="nav-label">Главная</span><span class="nav-icon" aria-hidden="true">Главная</span></a>
+        <a href="#about" aria-label="Обо мне"><span class="nav-label">Обо мне</span><span class="nav-icon" aria-hidden="true">Обо мне</span></a>
+        <a href="#projects" aria-label="Кейсы"><span class="nav-label">Кейсы</span><span class="nav-icon" aria-hidden="true">Кейсы</span></a>
         <a href="#artifacts" aria-label="Артефакты"><span class="nav-label">Артефакты</span><span class="nav-icon" aria-hidden="true">Артефакты</span></a>
-        <a href="#pet-projects" aria-label="Мои проекты"><span class="nav-label">Мои проекты</span><span class="nav-icon" aria-hidden="true">Мои проекты</span></a>
-        <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">Связь</span></a>
+        <a href="#contact" aria-label="Контакты"><span class="nav-label">Контакты</span><span class="nav-icon" aria-hidden="true">Контакты</span></a>
       </nav>
       <button class="theme-action" type="button" data-theme-toggle aria-label="Включить светлую тему" aria-pressed="false">
         <span class="theme-icon theme-icon-light" aria-hidden="true">☾</span>
         <span class="theme-icon theme-icon-dark" aria-hidden="true">✹</span>
       </button>
+      <button class="menu-action" type="button" data-menu-toggle aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <nav class="mobile-menu" id="mobileMenu" data-mobile-menu aria-label="Мобильная навигация">
+        <a href="#top">Главная</a>
+        <a href="#about">Обо мне</a>
+        <a href="#projects">Кейсы</a>
+        <a href="#artifacts">Артефакты</a>
+        <a href="#contact">Контакты</a>
+      </nav>
     </header>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow hero-eyebrow">{profile.name} / {profile.role}</p>
-          <h1 id="hero-title">Управляю digital-проектами без хаоса</h1>
-          <p class="lead">{keepShortWords(profile.headline)}</p>
-          <p class="hero-summary">{keepShortWords(profile.summary)}</p>
-          <div class="actions" aria-label="Основные действия">
-            <button class="button primary" type="button" data-feedback-trigger>Обсудить проект</button>
-          </div>
-        </div>
+    <main id="top" class="figma-page">
+      <section class="figma-hero" aria-labelledby="hero-title">
+        <p class="figma-kicker">{profile.name}</p>
+        <h1 id="hero-title">Project Manager IT-проектов</h1>
+        <p class="figma-hero-lead">Веду проекты от постановки задач до результата: бэклог, коммуникация, контроль сроков и качества.</p>
+        <a class="figma-button figma-button-fill" href="#projects">Посмотреть проекты</a>
+      </section>
 
-        <figure class="hero-media" aria-label="Портрет Дмитрия Фадеева">
-          <div class="portrait-frame">
-            <Image
-              src={portrait}
-              alt="Дмитрий Фадеев"
-              widths={[480, 720, 960]}
-              sizes="(max-width: 860px) 82vw, 40vw"
-              loading="eager"
-            />
-          </div>
+      <section class="figma-about" id="about" aria-labelledby="about-title">
+        <div class="figma-about-copy">
+          <p class="figma-kicker">Обо мне</p>
+          <h2 id="about-title">Веду проект от вводных до приемки результата</h2>
+          <p>{keepShortWords("Фиксирую границы, собираю бэклог, держу статусы, риски, коммуникацию и контроль качества.")}</p>
+          <ul class="figma-stats" aria-label="Ключевые цифры">
+            {
+              profile.heroStats.map((item) => (
+                <li>
+                  <strong>{item.value}</strong>
+                  <span>{item.label}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="figma-education-note" href={diplomaUrl} target="_blank" rel="noreferrer">
+            <span>{profile.education.title}</span>
+            <strong>{profile.education.program}</strong>
+          </a>
+        </div>
+        <figure class="figma-portrait" aria-label="Портрет Дмитрия Фадеева">
+          <Image
+            src={portrait}
+            alt="Дмитрий Фадеев"
+            widths={[420, 640, 900]}
+            sizes="(max-width: 760px) 82vw, 36vw"
+            loading="eager"
+          />
         </figure>
       </section>
 
-      <section class="section split-section education-section" id="education" aria-labelledby="education-title">
-        <div class="section-heading">
-          <p class="eyebrow">Диплом</p>
-          <h2 id="education-title">Яндекс Практикум по управлению IT-проектами</h2>
+      <section class="figma-projects" id="projects" aria-labelledby="projects-title">
+        <div class="figma-section-head">
+          <h2 id="projects-title">Ключевые кейсы</h2>
         </div>
-        <div class="education-panel education-panel-compact">
-          <div>
-            <h3>{profile.education.title}</h3>
-            <p>{keepShortWords(`${profile.education.program}. ${profile.education.qualification}, ${profile.education.hours}.`)}</p>
-            <p>{keepShortWords(profile.education.quote)}</p>
-          </div>
-          <a class="button secondary diploma-link" href={diplomaUrl} target="_blank" rel="noreferrer">Смотреть диплом</a>
-        </div>
-      </section>
-
-      <section class="section projects-section" id="projects" aria-labelledby="projects-title">
-        <div class="section-heading">
-          <p class="eyebrow">Опыт и кейсы</p>
-          <h2 id="projects-title">Digital, B2B и fashion-tech проекты</h2>
-          <div class="compact-skills" aria-label="Ключевые навыки">
-            {profile.skills.slice(0, 10).map((skill) => <span>{skill}</span>)}
-          </div>
-        </div>
-        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="experience" aria-controls="mobile-experience-panel" aria-expanded="false">
-          <span>Опыт</span>
-          <span aria-hidden="true">Открыть</span>
-        </button>
-        <div class="mobile-disclosure-panel" id="mobile-experience-panel" data-mobile-panel="experience">
-          <h3 class="project-section-label">Опыт</h3>
-          <div class="project-grid project-experience">
+        <div class="figma-project-grid">
           {
-            timelineExperience.map((item) => (
-              <article class="project-card experience-card">
-                <div class="project-topline">
-                  <span>Experience</span>
-                  <span>{item.data.role}</span>
+            keyCases.map((item) => (
+              <article class="figma-project-card">
+                <a class="figma-project-image" href={item.href ?? "#contact"} target={item.href ? "_blank" : undefined} rel={item.href ? "noreferrer" : undefined} aria-label={`Открыть кейс ${item.title}`}>
+                  <Image src={item.image} alt="" widths={[420, 720, 960]} sizes="(max-width: 760px) 88vw, 31vw" loading="lazy" />
+                </a>
+                <div class="figma-project-title">
+                  <h3>
+                    {item.href ? (
+                      <a href={item.href} target="_blank" rel="noreferrer">{item.title}</a>
+                    ) : (
+                      item.title
+                    )}
+                  </h3>
+                  <span aria-hidden="true"></span>
                 </div>
-                <h3>
-                  {item.data.companyLinks ? (
-                    <span class="company-links">
-                      {item.data.companyLinks.map((link, index) => (
-                        <>
-                          {index > 0 && <span class="company-separator">/</span>}
-                          <a class="title-link" href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-                        </>
-                      ))}
-                    </span>
-                  ) : item.data.url ? (
-                    <a href={item.data.url} target="_blank" rel="noreferrer">{item.data.company}</a>
-                  ) : (
-                    item.data.company
-                  )}
-                </h3>
-                <p>{keepShortWords(item.body ?? "")}</p>
-                <ul>
-                  {item.data.highlights.map((highlight) => <li>{keepShortWords(highlight)}</li>)}
-                </ul>
-              </article>
-            ))
-          }
-          </div>
-        </div>
-        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="cases" aria-controls="mobile-cases-panel" aria-expanded="false">
-          <span>Кейсы</span>
-          <span aria-hidden="true">Открыть</span>
-        </button>
-        <div class="mobile-disclosure-panel" id="mobile-cases-panel" data-mobile-panel="cases">
-          <h3 class="project-section-label">Кейсы</h3>
-          <div class="project-grid">
-          {
-            projectsWithPrimaryLinks.map(({ project, primaryHref }) => (
-              <article class="project-card">
-                <div class="project-topline">
-                  <span>{project.data.category}</span>
-                  {project.data.role && <span>{project.data.role}</span>}
-                </div>
-                <h3>
-                  {primaryHref ? (
-                    <a class="title-link" href={primaryHref} target="_blank" rel="noreferrer">
-                      {project.data.title}
-                    </a>
-                  ) : (
-                    project.data.title
-                  )}
-                </h3>
-                <p>{keepShortWords(project.body ?? "")}</p>
-                <ul>
-                  {project.data.outcomes.map((outcome) => <li>{keepShortWords(outcome)}</li>)}
-                </ul>
-                {project.data.stack.length > 0 && (
-                  <div class="tags" aria-label={`Технологии и инструменты проекта ${project.data.title}`}>
-                    {project.data.stack.map((tag) => <span>{tag}</span>)}
+                <dl>
+                  <div>
+                    <dt>Контекст:</dt>
+                    <dd>{item.context}</dd>
                   </div>
-                )}
+                  <div>
+                    <dt>PM-вклад:</dt>
+                    <dd>{item.contribution}</dd>
+                  </div>
+                  <div>
+                    <dt>Proof:</dt>
+                    <dd>{item.proof}</dd>
+                  </div>
+                </dl>
               </article>
             ))
           }
-          </div>
         </div>
+        {roviExperience && (
+          <aside class="figma-b2b-proof">
+            <span>B2B-опыт</span>
+            <p>{keepShortWords("РОВИ Факторинг Плюс / Дельта Лизинг: статусы, риски, процессы и коммуникация на стыке сервиса, финансовых продуктов и внутренних команд.")}</p>
+          </aside>
+        )}
       </section>
 
-      <section class="section artifacts-section" id="artifacts" aria-labelledby="artifacts-title">
-        <div class="section-heading">
-          <p class="eyebrow">PM documentation</p>
+      <section class="figma-artifacts" id="artifacts" aria-labelledby="artifacts-title">
+        <div class="figma-section-head">
           <h2 id="artifacts-title">Проектные артефакты</h2>
         </div>
-        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="artifacts" aria-controls="mobile-artifacts-panel" aria-expanded="false">
-          <span>Проектные артефакты</span>
-          <span aria-hidden="true">Открыть</span>
-        </button>
-        <div class="artifacts-panel mobile-disclosure-panel" id="mobile-artifacts-panel" data-mobile-panel="artifacts">
-          <div class="artifact-groups">
-            {
-              profile.artifacts.featuredGroups.map((group) => (
-                <article class="artifact-group">
-                  <div class="artifact-group-head">
-                    <h3>{group.title}</h3>
-                  </div>
-                  <p>{keepShortWords(group.text)}</p>
-                  <div class="artifact-links" aria-label={`Артефакты: ${group.title}`}>
-                    {group.links.map((link) => (
-                      <a href={link.href} target="_blank" rel="noreferrer">{link.label}</a>
-                    ))}
-                  </div>
-                </article>
-              ))
-            }
-          </div>
+        <div class="figma-artifact-grid">
+          {
+            artifactCards.map((card) => (
+              <a class="figma-artifact-card" href={card.href ?? profile.artifacts.sourceFolder} target="_blank" rel="noreferrer" aria-label={`Открыть артефакт: ${card.title}`}>
+                <span class={`figma-artifact-visual figma-artifact-visual-${card.variant}`} aria-hidden="true">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </span>
+                <strong>{card.title}</strong>
+                <span>{keepShortWords(card.text)}</span>
+              </a>
+            ))
+          }
         </div>
       </section>
 
-      <section class="section github-section" id="pet-projects" aria-labelledby="github-title">
-        <div class="section-heading">
-          <p class="eyebrow">GitHub</p>
-          <h2 id="github-title">Мои проекты</h2>
+      <section class="figma-github" id="github" aria-labelledby="github-title">
+        <div class="figma-section-head">
+          <h2 id="github-title">Мои проекты на GitHub</h2>
         </div>
-        <button class="mobile-disclosure-toggle" type="button" data-mobile-toggle="pet-projects" aria-controls="mobile-pet-projects-panel" aria-expanded="false">
-          <span>Пет-проекты</span>
-          <span aria-hidden="true">Открыть</span>
-        </button>
-        <div class="github-panel mobile-disclosure-panel" id="mobile-pet-projects-panel" data-mobile-panel="pet-projects">
-          <p>{keepShortWords(profile.github.note)}</p>
-          <div class="repo-actions" aria-label="Публичные репозитории GitHub">
-            {
-              profile.github.repos.map((repo) => (
-                <a class="repo-button" href={repo.href} target="_blank" rel="noreferrer">
-                  <span>{repo.name}</span>
-                  <small>{keepShortWords(repo.description)}</small>
-                </a>
-              ))
-            }
-          </div>
+        <div class="figma-github-grid">
+          {
+            profile.github.repos.map((repo) => (
+              <a href={repo.href} target="_blank" rel="noreferrer" aria-label={`Открыть репозиторий ${repo.name}`}>
+                <strong>{repo.name}</strong>
+                <span>{keepShortWords(repo.description)}</span>
+              </a>
+            ))
+          }
         </div>
       </section>
 
-      <footer class="contact" id="contact" aria-labelledby="contact-title">
-        <div class="contact-copy">
-          <p class="eyebrow">Контакты</p>
-          <h2 id="contact-title">Готов обсудить digital или IT-проект</h2>
-          <div class="contact-actions">
-            <a href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Написать на email</a>
-            <a href={profile.vk} target="_blank" rel="noreferrer">Написать в VK</a>
-            <a href={profile.github.publicRepos} target="_blank" rel="noreferrer">GitHub</a>
-          </div>
+      <footer class="figma-contact" id="contact" aria-labelledby="contact-title">
+        <div class="figma-contact-head">
+          <h2 id="contact-title">Готов обсудить проектную роль</h2>
+          <p>Если мой подход подходит вашей команде, напишите удобным способом.</p>
         </div>
-        <form class="feedback-form contact-form" data-feedback-form data-form-endpoint={contactFormEndpoint} novalidate>
-          <div class="feedback-head">
-            <div>
-              <p class="eyebrow">Форма связи</p>
-              <h2>Напишите коротко, что вас заинтересовало</h2>
-              <p class="feedback-subtitle">{keepShortWords("Я свяжусь с вами в течение 1 часа.")}</p>
-            </div>
-          </div>
-
-          <label>
-            <span>Имя</span>
-            <input name="name" type="text" autocomplete="name" minlength="2" required placeholder="Как к вам обращаться" />
-          </label>
-
-          <label>
-            <span>Почта</span>
-            <input name="contact" type="email" autocomplete="email" required placeholder="email@example.com" />
-          </label>
-
-          <label>
-            <span>Тема обращения</span>
-            <input name="topic" type="text" minlength="10" required placeholder="Не менее 10 символов" />
-          </label>
-
-          <label class="consent-check">
-            <input name="consent" type="checkbox" required />
-            <span>
-              Согласен с <a href={privacyUrl} target="_blank">политикой конфиденциальности</a> и <a href={consentUrl} target="_blank">обработкой персональных данных</a>.
-            </span>
-          </label>
-
-          <p class="form-error" data-feedback-error hidden>Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов, согласие - отмечено.</p>
-          <p class="form-success" data-feedback-success hidden>Спасибо, сообщение отправлено. Я свяжусь с вами в течение 1 часа.</p>
-
-          <button class="button primary form-submit" type="submit">Отправить</button>
-        </form>
-        <div class="legal-links" aria-label="Юридическая информация">
-          <a href={privacyUrl}>Политика конфиденциальности</a>
-          <a href={consentUrl}>Согласие на обработку данных</a>
+        <div class="figma-contact-actions" aria-label="Способы связи">
+          <a class="figma-button figma-button-outline" href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Email</a>
+          <a class="figma-button figma-button-outline" href={profile.vk} target="_blank" rel="noreferrer">VK</a>
+          <button class="figma-button figma-button-fill" type="button" data-feedback-trigger>Связаться</button>
         </div>
       </footer>
     </main>
@@ -348,6 +318,8 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       const dialog = document.getElementById("feedbackDialog");
       const root = document.documentElement;
       const themeToggle = document.querySelector("[data-theme-toggle]");
+      const menuToggle = document.querySelector("[data-menu-toggle]");
+      const mobileMenu = document.querySelector("[data-mobile-menu]");
       const validationErrorText = "Проверьте поля: имя - буквы и пробелы, почта - с @, тема - от 10 символов, согласие - отмечено.";
       const deliveryErrorText = "Не получилось отправить сообщение. Попробуйте еще раз или нажмите «Написать на email».";
       let themeTransitionTimer;
@@ -385,6 +357,39 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
 
       themeToggle?.addEventListener("click", () => {
         applyTheme(root.dataset.theme === "light" ? "dark" : "light", { animate: true });
+      });
+
+      const setMenuState = (isOpen) => {
+        mobileMenu?.classList.toggle("is-open", isOpen);
+        menuToggle?.classList.toggle("is-open", isOpen);
+        menuToggle?.setAttribute("aria-expanded", String(isOpen));
+        menuToggle?.setAttribute("aria-label", isOpen ? "Закрыть меню" : "Открыть меню");
+      };
+
+      menuToggle?.addEventListener("click", () => {
+        setMenuState(!mobileMenu?.classList.contains("is-open"));
+      });
+
+      mobileMenu?.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => setMenuState(false));
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!mobileMenu?.classList.contains("is-open") || !(event.target instanceof Node)) {
+          return;
+        }
+
+        if (mobileMenu.contains(event.target) || menuToggle?.contains(event.target)) {
+          return;
+        }
+
+        setMenuState(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setMenuState(false);
+        }
       });
 
       const mobileDisclosureQuery = window.matchMedia("(max-width: 560px)");
