@@ -1,10 +1,10 @@
 ---
-company: "РОВИ Факторинг Плюс / Дельта Лизинг"
+company: "ROVI Factoring Plus / Delta Leasing"
 role: "Project Manager B2B"
 companyLinks:
-  - label: "РОВИ Факторинг Плюс"
+  - label: "ROVI Factoring Plus"
     href: "https://rowi.com/"
-  - label: "Дельта Лизинг"
+  - label: "Delta Leasing"
     href: "https://deltaleasing.ru/about/"
 order: 4
 highlights:

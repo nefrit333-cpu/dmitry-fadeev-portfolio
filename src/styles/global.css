@@ -2435,11 +2435,7 @@ body.figma-remake {
   --figma-dim: #606060;
   --figma-accent: #ff9142;
   color: var(--figma-ink);
-  background:
-    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.13), transparent 13%),
-    radial-gradient(circle at 72% 31%, rgba(255, 145, 66, 0.11), transparent 11%),
-    radial-gradient(circle at 58% 72%, rgba(255, 255, 255, 0.08), transparent 12%),
-    var(--figma-bg);
+  background: var(--figma-bg);
 }
 
 body.figma-remake::before {
@@ -2447,12 +2443,13 @@ body.figma-remake::before {
 }
 
 .figma-remake .site-header {
-  top: 30px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  width: min(100% - 60px, 1146px);
-  min-height: 47px;
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  left: auto;
+  display: block;
+  width: auto;
+  min-height: auto;
   margin: 0 auto;
   padding: 0;
   border: 0;
@@ -2464,6 +2461,7 @@ body.figma-remake::before {
 }
 
 .figma-remake .brand {
+  display: none;
   min-height: auto;
   padding: 0;
   border: 0;
@@ -2483,8 +2481,8 @@ body.figma-remake::before {
 }
 
 .figma-remake .nav {
+  display: none;
   justify-self: end;
-  display: flex;
   align-items: center;
   gap: 28px;
   min-height: auto;
@@ -2521,6 +2519,37 @@ body.figma-remake::before {
 
 .figma-remake .theme-action {
   display: none;
+}
+
+.figma-remake .menu-action {
+  display: inline-grid;
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 145, 66, 0.22), rgba(255, 145, 66, 0.08) 44%, rgba(18, 18, 18, 0.86) 72%);
+  color: var(--figma-accent);
+  box-shadow:
+    0 0 32px rgba(255, 145, 66, 0.24),
+    0 18px 38px rgba(0, 0, 0, 0.34);
+}
+
+.figma-remake .menu-action span {
+  width: 22px;
+  height: 3px;
+}
+
+.figma-remake .mobile-menu {
+  display: none;
+  inset: calc(100% + 12px) 0 auto auto;
+  width: min(260px, calc(100vw - 48px));
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(19, 19, 19, 0.96);
+}
+
+.figma-remake .mobile-menu.is-open {
+  display: grid;
 }
 
 .figma-page {
@@ -2906,17 +2935,21 @@ body.figma-remake::before {
 }
 
 .figma-project-card dl div {
-  display: flex;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: minmax(76px, 0.28fr) minmax(0, 1fr);
+  column-gap: 18px;
+  align-items: start;
 }
 
 .figma-project-card dt {
-  flex: 0 0 76px;
   color: var(--figma-dim);
+  line-height: 1.35;
 }
 
 .figma-project-card dd {
+  min-width: 0;
   margin: 0;
+  line-height: 1.45;
 }
 
 .figma-b2b-proof {
@@ -2943,6 +2976,11 @@ body.figma-remake::before {
   margin: 0;
   color: var(--figma-muted);
   line-height: 1.55;
+}
+
+.figma-b2b-proof strong {
+  color: var(--figma-ink);
+  font-weight: 780;
 }
 
 .figma-proof {
@@ -3148,6 +3186,39 @@ body.figma-remake::before {
   padding: 0 0 126px;
 }
 
+.figma-github::before,
+.figma-github::after,
+.figma-contact::before,
+.figma-contact::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.figma-github::before {
+  right: -92px;
+  top: -34px;
+  width: 250px;
+  height: 138px;
+  border: 1px solid rgba(255, 145, 66, 0.22);
+  border-radius: 50%;
+  transform: rotate(-10deg);
+}
+
+.figma-github::after {
+  left: -28px;
+  top: 64px;
+  width: 74px;
+  height: 1px;
+  background: rgba(255, 145, 66, 0.56);
+  box-shadow: 30px 96px 0 rgba(255, 145, 66, 0.26);
+}
+
+.figma-github > * {
+  position: relative;
+  z-index: 1;
+}
+
 .figma-github-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3155,13 +3226,16 @@ body.figma-remake::before {
 }
 
 .figma-github-grid a {
+  position: relative;
   display: grid;
   gap: 18px;
   min-height: 220px;
   padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
+  overflow: hidden;
   background:
+    radial-gradient(circle at 86% 20%, rgba(255, 145, 66, 0.08), transparent 26%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.01)),
     #151515;
   color: var(--figma-ink);
@@ -3169,6 +3243,68 @@ body.figma-remake::before {
   transition:
     transform 220ms ease,
     border-color 220ms ease;
+}
+
+.figma-github-grid a::before,
+.figma-github-grid a::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.figma-github-grid a::before {
+  right: -42px;
+  top: -34px;
+  width: 128px;
+  height: 86px;
+  border: 1px solid rgba(255, 145, 66, 0.24);
+  border-radius: 50%;
+  transform: rotate(-12deg);
+}
+
+.figma-github-grid a::after {
+  left: 28px;
+  bottom: 26px;
+  width: 54px;
+  height: 1px;
+  background: rgba(255, 145, 66, 0.52);
+  box-shadow:
+    72px 0 0 rgba(255, 145, 66, 0.18),
+    168px -72px 0 -3px rgba(255, 145, 66, 0.42);
+}
+
+.figma-github-grid a:nth-child(2)::before {
+  right: auto;
+  left: -46px;
+  top: auto;
+  bottom: -38px;
+  transform: rotate(14deg);
+}
+
+.figma-github-grid a:nth-child(2)::after {
+  bottom: auto;
+  top: 28px;
+  width: 42px;
+  box-shadow:
+    62px 54px 0 rgba(255, 145, 66, 0.18),
+    204px 84px 0 -3px rgba(255, 145, 66, 0.38);
+}
+
+.figma-github-grid a:nth-child(3)::before {
+  top: 50%;
+  transform: translateY(-50%) rotate(-12deg);
+}
+
+.figma-github-grid a:nth-child(3)::after {
+  width: 66px;
+  box-shadow:
+    88px -44px 0 rgba(255, 145, 66, 0.18),
+    216px -6px 0 -3px rgba(255, 145, 66, 0.4);
+}
+
+.figma-github-grid a > * {
+  position: relative;
+  z-index: 1;
 }
 
 .figma-github-grid a:hover,
@@ -3193,9 +3329,35 @@ body.figma-remake::before {
 }
 
 .figma-contact {
+  position: relative;
   margin-top: 0;
   padding: 96px max(24px, calc((100vw - 1148px) / 2)) 88px;
+  overflow: hidden;
   background: var(--figma-panel);
+}
+
+.figma-contact::before {
+  right: max(-120px, calc((100vw - 1148px) / 2 - 180px));
+  top: 58px;
+  width: 300px;
+  height: 170px;
+  border: 1px solid rgba(255, 145, 66, 0.2);
+  border-radius: 50%;
+  transform: rotate(-14deg);
+}
+
+.figma-contact::after {
+  left: max(24px, calc((100vw - 1148px) / 2));
+  bottom: 46px;
+  width: 86px;
+  height: 1px;
+  background: rgba(255, 145, 66, 0.52);
+  box-shadow: 118px 0 0 rgba(255, 145, 66, 0.22);
+}
+
+.figma-contact > * {
+  position: relative;
+  z-index: 1;
 }
 
 .figma-contact-head {
@@ -3225,17 +3387,26 @@ body.figma-remake::before {
 
 .figma-contact-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  width: min(100%, 560px);
+  width: min(100%, 820px);
   margin: 52px auto 0;
 }
 
 .figma-contact-actions .figma-button {
+  min-width: 0;
   width: 100%;
   min-height: 52px;
   margin-top: 0;
   padding-inline: 18px;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.figma-contact-message-button {
+  cursor: pointer;
+  font: inherit;
 }
 
 .figma-contact-grid {
@@ -3317,15 +3488,23 @@ body.figma-remake::before {
 
 @media (max-width: 900px) {
   .figma-remake .site-header {
-    width: calc(100% - 28px);
-    top: 12px;
-    grid-template-columns: minmax(0, 1fr) auto;
-    min-height: 52px;
-    padding: 0 14px;
-    border-radius: 18px;
-    background: rgba(19, 19, 19, 0.78);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    left: auto;
+    display: block;
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .figma-remake .brand {
+    display: none;
   }
 
   .figma-remake .nav {
@@ -3334,17 +3513,27 @@ body.figma-remake::before {
 
   .figma-remake .menu-action {
     display: inline-grid;
-    grid-column: 2;
-    width: 36px;
-    height: 36px;
+    width: 58px;
+    height: 58px;
     border: 0;
-    border-radius: 12px;
-    background: transparent;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(255, 145, 66, 0.22), rgba(255, 145, 66, 0.08) 44%, rgba(18, 18, 18, 0.86) 72%);
+    color: var(--figma-accent);
+    box-shadow:
+      0 0 32px rgba(255, 145, 66, 0.24),
+      0 18px 38px rgba(0, 0, 0, 0.34);
+  }
+
+  .figma-remake .menu-action span {
+    width: 22px;
+    height: 3px;
   }
 
   .figma-remake .mobile-menu {
     display: none;
-    inset: calc(100% + 8px) 0 auto;
+    inset: calc(100% + 12px) 0 auto auto;
+    width: min(260px, calc(100vw - 48px));
     border-color: rgba(255, 255, 255, 0.14);
     background: rgba(19, 19, 19, 0.96);
   }
@@ -3354,8 +3543,42 @@ body.figma-remake::before {
   }
 
   .figma-hero {
-    min-height: 620px;
-    padding: 112px 18px 64px;
+    isolation: isolate;
+    min-height: 0;
+    padding: 118px 30px 74px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 78% 8%, rgba(255, 145, 66, 0.08), transparent 18%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.012), rgba(0, 0, 0, 0.06)),
+      #1a1a1a;
+  }
+
+  .figma-hero::before {
+    z-index: 0;
+    left: 50%;
+    top: 32%;
+    width: 410px;
+    height: 250px;
+    border-color: rgba(255, 145, 66, 0.16);
+    opacity: 0.5;
+    transform: translateX(-4%) rotate(-13deg);
+  }
+
+  .figma-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 52% 18%, rgba(255, 255, 255, 0.025), transparent 18%),
+      linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.14));
+    opacity: 0.7;
+  }
+
+  .figma-hero > * {
+    position: relative;
+    z-index: 1;
   }
 
   .figma-about,
@@ -3366,7 +3589,13 @@ body.figma-remake::before {
 
   .figma-about {
     gap: 40px;
-    padding-top: 26px;
+    padding: 0 0 88px;
+  }
+
+  .figma-about::before,
+  .figma-projects::after,
+  .figma-proof::before {
+    content: none;
   }
 
   .figma-portrait {
@@ -3391,23 +3620,40 @@ body.figma-remake::before {
   }
 
   .figma-hero {
-    min-height: 560px;
-    padding: 96px 18px 44px;
+    min-height: 438px;
+    padding: 90px 28px 40px;
   }
 
   .figma-hero h1 {
-    font-size: clamp(2.6rem, 12vw, 3.7rem);
+    max-width: 10.8ch;
+    font-size: clamp(2.38rem, 10.8vw, 2.82rem);
+    line-height: 1.02;
   }
 
   .figma-hero-lead {
-    max-width: 336px;
-    margin-top: 24px;
-    font-size: 0.94rem;
+    max-width: 36ch;
+    margin-top: 20px;
+    color: rgba(253, 253, 253, 0.62);
+    font-size: clamp(0.78rem, 3.45vw, 0.86rem);
+    line-height: 1.45;
   }
 
-  .figma-kicker {
+  .figma-hero .figma-kicker {
     margin-bottom: 16px;
-    font-size: 0.78rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+  }
+
+  .figma-hero .figma-button {
+    min-height: 50px;
+    margin-top: 26px;
+    padding-inline: 28px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    box-shadow:
+      0 22px 42px rgba(255, 112, 40, 0.18),
+      0 18px 44px rgba(0, 0, 0, 0.38);
   }
 
   .figma-button {
@@ -3469,6 +3715,7 @@ body.figma-remake::before {
   }
 
   .figma-projects {
+    padding-top: 28px;
     padding-bottom: 88px;
   }
 
@@ -3494,6 +3741,17 @@ body.figma-remake::before {
     font-size: 0.78rem;
   }
 
+  .figma-project-card dl div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding-top: 2px;
+  }
+
+  .figma-project-card dt,
+  .figma-project-card dd {
+    text-align: left;
+  }
+
   .figma-artifact-card {
     min-height: 310px;
   }
@@ -3509,8 +3767,36 @@ body.figma-remake::before {
     padding-bottom: 88px;
   }
 
+  .figma-github::before {
+    right: -118px;
+    top: -20px;
+    width: 230px;
+    height: 132px;
+    opacity: 0.85;
+  }
+
+  .figma-github::after {
+    left: 0;
+    top: 88px;
+    width: 52px;
+  }
+
   .figma-contact {
     padding-top: 70px;
+  }
+
+  .figma-contact::before {
+    right: -156px;
+    top: 26px;
+    width: 250px;
+    height: 152px;
+    opacity: 0.85;
+  }
+
+  .figma-contact::after {
+    left: 24px;
+    bottom: 34px;
+    width: 64px;
   }
 
   .figma-contact-head h2 {
@@ -3522,7 +3808,53 @@ body.figma-remake::before {
   }
 
   .figma-contact-actions {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     margin-top: 38px;
+  }
+
+  .figma-contact-message-button {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 360px) and (max-height: 700px) {
+  .figma-remake .site-header {
+    top: 18px;
+    right: 22px;
+  }
+
+  .figma-remake .menu-action {
+    width: 54px;
+    height: 54px;
+  }
+
+  .figma-hero {
+    min-height: 418px;
+    padding: 76px 22px 38px;
+  }
+
+  .figma-hero .figma-kicker {
+    margin-bottom: 14px;
+    font-size: 0.66rem;
+  }
+
+  .figma-hero h1 {
+    max-width: 10.6ch;
+    font-size: clamp(2.24rem, 11.6vw, 2.58rem);
+    line-height: 1.03;
+  }
+
+  .figma-hero-lead {
+    max-width: 34ch;
+    margin-top: 16px;
+    font-size: 0.76rem;
+    line-height: 1.42;
+  }
+
+  .figma-hero .figma-button {
+    min-height: 46px;
+    margin-top: 20px;
+    padding-inline: 22px;
+    font-size: 0.64rem;
   }
 }

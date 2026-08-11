@@ -21,29 +21,26 @@ const experienceByCompany = (company: string) => experience.find((item) => item.
 const widProject = projectByTitle("WID");
 const pixelProject = projectByTitle("Pixel Runner");
 const w3promoExperience = experienceByCompany("W3Promo");
-const roviExperience = experienceByCompany("РОВИ Факторинг Плюс / Дельта Лизинг");
+const roviExperience = experienceByCompany("ROVI Factoring Plus / Delta Leasing");
 const keyCases = [
   {
     title: "WID",
     context: "Product / fashion-tech",
     contribution: "Требования, бэклог, Kanban, зависимости и согласования внутри продукта.",
-    proof: "Backlog / QA",
     href: widProject?.data.titleHref,
     image: projectVisuals[0],
   },
   {
     title: "W3Promo",
-    context: "Digital / агентский масштаб",
+    context: "Digital-проекты",
     contribution: "До 10 проектов, подрядчики, сроки, бюджеты, сметы и проектная документация.",
-    proof: "Roadmap / смета",
     href: w3promoExperience?.data.url,
     image: projectVisuals[1],
   },
   {
     title: "Pixel Runner",
-    context: "IT / игра и лендинг",
+    context: "Game dev",
     contribution: "Механика, лидерборд, античит, интеграции, ТЗ и критерии приемки.",
-    proof: "ТЗ / acceptance",
     href: pixelProject?.data.titleHref,
     image: projectVisuals[2],
   },
@@ -143,7 +140,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       <section class="figma-hero" aria-labelledby="hero-title">
         <p class="figma-kicker">{profile.name}</p>
         <h1 id="hero-title">Project Manager IT-проектов</h1>
-        <p class="figma-hero-lead">Веду проекты от постановки задач до результата: бэклог, коммуникация, контроль сроков и качества.</p>
+        <p class="figma-hero-lead">Веду проекты от постановки задач до результата: бюджет, коммуникация, контроль сроков и качества.</p>
         <a class="figma-button figma-button-fill" href="#projects">Посмотреть проекты</a>
       </section>
 
@@ -205,12 +202,8 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
                     <dd>{item.context}</dd>
                   </div>
                   <div>
-                    <dt>PM-вклад:</dt>
+                    <dt>Зона ответственности:</dt>
                     <dd>{item.contribution}</dd>
-                  </div>
-                  <div>
-                    <dt>Proof:</dt>
-                    <dd>{item.proof}</dd>
                   </div>
                 </dl>
               </article>
@@ -220,7 +213,9 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         {roviExperience && (
           <aside class="figma-b2b-proof">
             <span>B2B-опыт</span>
-            <p>{keepShortWords("РОВИ Факторинг Плюс / Дельта Лизинг: статусы, риски, процессы и коммуникация на стыке сервиса, финансовых продуктов и внутренних команд.")}</p>
+            <p>
+              <strong>ROVI Factoring Plus / Delta Leasing</strong>: {keepShortWords("статусы, риски, процессы и коммуникация на стыке сервиса, финансовых продуктов и внутренних команд.")}
+            </p>
           </aside>
         )}
       </section>
@@ -270,7 +265,9 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         <div class="figma-contact-actions" aria-label="Способы связи">
           <a class="figma-button figma-button-outline" href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Email</a>
           <a class="figma-button figma-button-outline" href={profile.vk} target="_blank" rel="noreferrer">VK</a>
-          <button class="figma-button figma-button-fill" type="button" data-feedback-trigger>Связаться</button>
+          <button class="figma-button figma-button-outline figma-contact-message-button" type="button" data-feedback-trigger>
+            Оставить короткое сообщение
+          </button>
         </div>
       </footer>
     </main>
