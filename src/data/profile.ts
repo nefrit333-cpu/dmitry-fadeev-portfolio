@@ -69,7 +69,7 @@ export const profile = {
     qualification: "Менеджер по информационным технологиям",
     period: "17.07.2025 - 26.03.2026",
     hours: "305 часов",
-    diplomaUrl: "/docs/yandex-diploma-dmitry-fadeev.pdf",
+    diplomaUrl: "/docs/diploma-ru-fadeev-2026.pdf",
   },
   artifacts: {
     sourceFolder: "https://drive.google.com/drive/folders/1LtI1e40Z-mmgPF7K9Rs90uHuaeVXIB06?usp=sharing",

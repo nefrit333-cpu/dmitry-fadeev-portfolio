@@ -4,10 +4,17 @@ import { Image } from "astro:assets";
 import "../styles/global.css";
 import { profile } from "../data/profile";
 import portrait from "../../public/images/dmitry-fadeev-editorial.png";
-import projectAbstract1 from "../../public/images/figma/project-abstract-1.png";
-import projectAbstract2 from "../../public/images/figma/project-abstract-2.png";
-import projectAbstract3 from "../../public/images/figma/project-abstract-3.png";
-import projectAbstract4 from "../../public/images/figma/project-abstract-4.png";
+import githubMyFirstSite from "../../public/images/github/my-first-site-card.png";
+import githubPogodaSeychas from "../../public/images/github/pogoda-seychas-card.png";
+import githubSpineFlow from "../../public/images/github/spine-flow-card.png";
+import keyCasePixelRunner from "../../public/images/key-cases/pixel-runner-card.png";
+import keyCaseW3Promo from "../../public/images/key-cases/w3promo-card.png";
+import keyCaseWid from "../../public/images/key-cases/wid-card.png";
+import artifactBacklog from "../../public/images/artifacts/backlog-card.png";
+import artifactQaChecklist from "../../public/images/artifacts/qa-checklist-card.png";
+import artifactRoadmapRisk from "../../public/images/artifacts/roadmap-risk-card.png";
+import artifactSpecStructure from "../../public/images/artifacts/spec-structure-card.png";
+import diplomaPreview from "../../public/images/diploma/diploma-ru-fadeev-2026.png";
 
 const experience = (await getCollection("experience")).sort(
   (a, b) => a.data.order - b.data.order,
@@ -15,32 +22,36 @@ const experience = (await getCollection("experience")).sort(
 const projects = (await getCollection("projects")).sort(
   (a, b) => a.data.order - b.data.order,
 );
-const projectVisuals = [projectAbstract1, projectAbstract2, projectAbstract3, projectAbstract4];
+const projectVisuals = [keyCaseWid, keyCaseW3Promo, keyCasePixelRunner];
+const githubVisuals = [githubSpineFlow, githubPogodaSeychas, githubMyFirstSite];
 const projectByTitle = (title: string) => projects.find((project) => project.data.title === title);
 const experienceByCompany = (company: string) => experience.find((item) => item.data.company === company);
 const widProject = projectByTitle("WID");
 const pixelProject = projectByTitle("Pixel Runner");
 const w3promoExperience = experienceByCompany("W3Promo");
-const roviExperience = experienceByCompany("ROVI Factoring Plus / Delta Leasing");
+const roviExperience = experienceByCompany("РОВИ Факторинг Плюс / Дельта Лизинг");
 const keyCases = [
   {
     title: "WID",
     context: "Product / fashion-tech",
     contribution: "Требования, бэклог, Kanban, зависимости и согласования внутри продукта.",
+    proof: "Backlog / QA",
     href: widProject?.data.titleHref,
     image: projectVisuals[0],
   },
   {
     title: "W3Promo",
-    context: "Digital-проекты",
+    context: "Digital / агентский масштаб",
     contribution: "До 10 проектов, подрядчики, сроки, бюджеты, сметы и проектная документация.",
+    proof: "Roadmap / смета",
     href: w3promoExperience?.data.url,
     image: projectVisuals[1],
   },
   {
     title: "Pixel Runner",
-    context: "Game dev",
+    context: "IT / игра и лендинг",
     contribution: "Механика, лидерборд, античит, интеграции, ТЗ и критерии приемки.",
+    proof: "ТЗ / acceptance",
     href: pixelProject?.data.titleHref,
     image: projectVisuals[2],
   },
@@ -51,24 +62,28 @@ const artifactCards = [
     text: "Этапы, сроки, точки контроля и риски проекта.",
     href: profile.artifacts.featuredGroups[0]?.links[0]?.href,
     variant: "roadmap",
+    image: artifactRoadmapRisk,
   },
   {
     title: "Backlog",
     text: "Задачи, приоритеты и границы работ.",
     href: profile.artifacts.featuredGroups[1]?.links[0]?.href,
     variant: "backlog",
+    image: artifactBacklog,
   },
   {
     title: "QA checklist",
     text: "Критерии приемки и контроль качества.",
     href: profile.artifacts.featuredGroups[0]?.links[0]?.href,
     variant: "qa",
+    image: artifactQaChecklist,
   },
   {
     title: "ТЗ / структура страниц",
     text: "Технический контур и передача задач в разработку.",
     href: profile.artifacts.featuredGroups[2]?.links[0]?.href,
     variant: "spec",
+    image: artifactSpecStructure,
   },
 ];
 const keepShortWords = (value: string) =>
@@ -107,10 +122,6 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
   </head>
   <body class="figma-remake">
     <header class="site-header">
-      <a class="brand" href="#top">
-        <span class="brand-full">Dmitriy Web</span>
-        <span class="brand-short" aria-hidden="true">ДФ</span>
-      </a>
       <nav class="nav" aria-label="Основная навигация">
         <a href="#top" aria-label="Главная"><span class="nav-label">Главная</span><span class="nav-icon" aria-hidden="true">Главная</span></a>
         <a href="#about" aria-label="Обо мне"><span class="nav-label">Обо мне</span><span class="nav-icon" aria-hidden="true">Обо мне</span></a>
@@ -140,7 +151,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       <section class="figma-hero" aria-labelledby="hero-title">
         <p class="figma-kicker">{profile.name}</p>
         <h1 id="hero-title">Project Manager IT-проектов</h1>
-        <p class="figma-hero-lead">Веду проекты от постановки задач до результата: бюджет, коммуникация, контроль сроков и качества.</p>
+        <p class="figma-hero-lead">Веду проекты от постановки задач до результата: бэклог, коммуникация, контроль сроков и качества.</p>
         <a class="figma-button figma-button-fill" href="#projects">Посмотреть проекты</a>
       </section>
 
@@ -148,7 +159,10 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         <div class="figma-about-copy">
           <p class="figma-kicker">Обо мне</p>
           <h2 id="about-title">Веду проект от вводных до приемки результата</h2>
-          <p>{keepShortWords("Фиксирую границы, собираю бэклог, держу статусы, риски, коммуникацию и контроль качества.")}</p>
+          <div class="figma-about-text">
+            <p>{keepShortWords("Я project manager IT- и digital-проектов с опытом 5 лет. Работал с продуктами, сайтами, подрядчиками и командами разработки.")}</p>
+            <p>{keepShortWords("Умею собирать бриф, вести бэклог, сроки, риски, ТЗ, приемку и понятный статус для всех участников.")}</p>
+          </div>
           <ul class="figma-stats" aria-label="Ключевые цифры">
             {
               profile.heroStats.map((item) => (
@@ -159,10 +173,13 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
               ))
             }
           </ul>
-          <a class="figma-education-note" href={diplomaUrl} target="_blank" rel="noreferrer">
-            <span>{profile.education.title}</span>
+          <div class="figma-education-note">
+            <span>Диплом Яндекс Практикума</span>
             <strong>{profile.education.program}</strong>
-          </a>
+            <button class="figma-diploma-trigger" type="button" data-diploma-trigger aria-haspopup="dialog">
+              Открыть диплом
+            </button>
+          </div>
         </div>
         <figure class="figma-portrait" aria-label="Портрет Дмитрия Фадеева">
           <Image
@@ -202,8 +219,12 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
                     <dd>{item.context}</dd>
                   </div>
                   <div>
-                    <dt>Зона ответственности:</dt>
+                    <dt>PM-вклад:</dt>
                     <dd>{item.contribution}</dd>
+                  </div>
+                  <div>
+                    <dt>Proof:</dt>
+                    <dd>{item.proof}</dd>
                   </div>
                 </dl>
               </article>
@@ -213,9 +234,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         {roviExperience && (
           <aside class="figma-b2b-proof">
             <span>B2B-опыт</span>
-            <p>
-              <strong>ROVI Factoring Plus / Delta Leasing</strong>: {keepShortWords("статусы, риски, процессы и коммуникация на стыке сервиса, финансовых продуктов и внутренних команд.")}
-            </p>
+            <p>{keepShortWords("РОВИ Факторинг Плюс / Дельта Лизинг: статусы, риски, процессы и коммуникация на стыке сервиса, финансовых продуктов и внутренних команд.")}</p>
           </aside>
         )}
       </section>
@@ -229,9 +248,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
             artifactCards.map((card) => (
               <a class="figma-artifact-card" href={card.href ?? profile.artifacts.sourceFolder} target="_blank" rel="noreferrer" aria-label={`Открыть артефакт: ${card.title}`}>
                 <span class={`figma-artifact-visual figma-artifact-visual-${card.variant}`} aria-hidden="true">
-                  <i></i>
-                  <i></i>
-                  <i></i>
+                  <Image src={card.image} alt="" widths={[360, 640, 960, 1280]} sizes="(max-width: 900px) 88vw, 22vw" loading="eager" />
                 </span>
                 <strong>{card.title}</strong>
                 <span>{keepShortWords(card.text)}</span>
@@ -247,10 +264,13 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         </div>
         <div class="figma-github-grid">
           {
-            profile.github.repos.map((repo) => (
+            profile.github.repos.map((repo, index) => (
               <a href={repo.href} target="_blank" rel="noreferrer" aria-label={`Открыть репозиторий ${repo.name}`}>
+                <span class="figma-github-image" aria-hidden="true">
+                  <Image src={githubVisuals[index]} alt="" widths={[360, 640, 960]} sizes="(max-width: 900px) 88vw, 31vw" loading="eager" />
+                </span>
                 <strong>{repo.name}</strong>
-                <span>{keepShortWords(repo.description)}</span>
+                <span class="figma-github-description">{keepShortWords(repo.description)}</span>
               </a>
             ))
           }
@@ -265,9 +285,7 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
         <div class="figma-contact-actions" aria-label="Способы связи">
           <a class="figma-button figma-button-outline" href={`mailto:${profile.email}?subject=${cooperationSubject}`}>Email</a>
           <a class="figma-button figma-button-outline" href={profile.vk} target="_blank" rel="noreferrer">VK</a>
-          <button class="figma-button figma-button-outline figma-contact-message-button" type="button" data-feedback-trigger>
-            Оставить короткое сообщение
-          </button>
+          <button class="figma-button figma-button-outline" type="button" data-feedback-trigger>Связаться</button>
         </div>
       </footer>
     </main>
@@ -311,8 +329,30 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       </form>
     </dialog>
 
+    <dialog class="diploma-dialog" id="diplomaDialog" aria-labelledby="diplomaDialogTitle" data-diploma-url={diplomaUrl}>
+      <div class="diploma-panel">
+        <div class="diploma-head">
+          <div>
+            <p class="eyebrow">Диплом</p>
+            <h2 id="diplomaDialogTitle">Яндекс Практикум</h2>
+          </div>
+          <button class="dialog-close" type="button" data-diploma-close aria-label="Закрыть диплом">×</button>
+        </div>
+        <div class="diploma-viewer">
+          <Image
+            src={diplomaPreview}
+            alt="Диплом Яндекс Практикума Дмитрия Фадеева"
+            widths={[720, 1040, 1440, 1920]}
+            sizes="(max-width: 560px) 92vw, 920px"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </dialog>
+
     <script is:inline>
       const dialog = document.getElementById("feedbackDialog");
+      const diplomaDialog = document.getElementById("diplomaDialog");
       const root = document.documentElement;
       const themeToggle = document.querySelector("[data-theme-toggle]");
       const menuToggle = document.querySelector("[data-menu-toggle]");
@@ -461,6 +501,48 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
       dialog?.addEventListener("click", (event) => {
         if (event.target === dialog) {
           dialog.close();
+        }
+      });
+
+      const closeDiplomaDialog = () => {
+        if (!diplomaDialog?.open || diplomaDialog.classList.contains("is-closing")) {
+          return;
+        }
+
+        diplomaDialog.classList.add("is-closing");
+      };
+
+      document.querySelectorAll("[data-diploma-trigger]").forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          if (diplomaDialog && "showModal" in diplomaDialog) {
+            diplomaDialog.classList.remove("is-closing");
+            diplomaDialog.showModal();
+            return;
+          }
+
+          window.open(diplomaDialog?.dataset.diplomaUrl, "_blank", "noopener");
+        });
+      });
+
+      document.querySelectorAll("[data-diploma-close]").forEach((trigger) => {
+        trigger.addEventListener("click", closeDiplomaDialog);
+      });
+
+      diplomaDialog?.addEventListener("click", (event) => {
+        if (event.target === diplomaDialog) {
+          closeDiplomaDialog();
+        }
+      });
+
+      diplomaDialog?.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        closeDiplomaDialog();
+      });
+
+      diplomaDialog?.addEventListener("animationend", (event) => {
+        if (event.animationName === "diploma-panel-out") {
+          diplomaDialog.classList.remove("is-closing");
+          diplomaDialog.close();
         }
       });
 
