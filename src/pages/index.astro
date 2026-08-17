@@ -33,25 +33,22 @@ const roviExperience = experienceByCompany("РОВИ Факторинг Плюс
 const keyCases = [
   {
     title: "WID",
-    context: "Product / fashion-tech",
+    context: "Product / Fashion-tech",
     contribution: "Требования, бэклог, Kanban, зависимости и согласования внутри продукта.",
-    proof: "Backlog / QA",
     href: widProject?.data.titleHref,
     image: projectVisuals[0],
   },
   {
     title: "W3Promo",
-    context: "Digital / агентский масштаб",
+    context: "Digital",
     contribution: "До 10 проектов, подрядчики, сроки, бюджеты, сметы и проектная документация.",
-    proof: "Roadmap / смета",
     href: w3promoExperience?.data.url,
     image: projectVisuals[1],
   },
   {
     title: "Pixel Runner",
-    context: "IT / игра и лендинг",
+    context: "GameDev",
     contribution: "Механика, лидерборд, античит, интеграции, ТЗ и критерии приемки.",
-    proof: "ТЗ / acceptance",
     href: pixelProject?.data.titleHref,
     image: projectVisuals[2],
   },
@@ -221,10 +218,6 @@ const diplomaUrl = `${basePath}${profile.education.diplomaUrl.replace(/^\//, "")
                   <div>
                     <dt>PM-вклад:</dt>
                     <dd>{item.contribution}</dd>
-                  </div>
-                  <div>
-                    <dt>Proof:</dt>
-                    <dd>{item.proof}</dd>
                   </div>
                 </dl>
               </article>
